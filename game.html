@@ -6,10 +6,11 @@
         <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="game/game.js"></script>
+        
         <link rel="stylesheet" type="text/css" href="css/reset.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+
     </head>
     <body>
         <header>
@@ -20,10 +21,14 @@
                 </ul>
             </nav>
         </header>
-    <button onClick=start();>asdasasd </button>
      <section id="game">                           
          <canvas id="gamecanvas"> </canvas>     
     </section>
-
+    <script src="game/game.js"></script>
+    <script type="text/javascript" charset="utf-8">
+            Game.initialize();
+            window.onEachFrame(Game.run);
+    </script>
+    
     </body>
 </html>
