@@ -2,7 +2,8 @@ var ctx, width, height, canvas;
 var Game = {};
 var Player = {};    
 var keys = {};
-var lastLoop = new Date;
+var filterStrength = 20;
+var frameTime = 0, lastLoop = new Date, thisLoop, thisFrameTime;
 
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
@@ -47,6 +48,10 @@ Game.initialize = function() {
 Game.update = function(tick) {
     Game.tick = tick; 
     Game.input();
+   
+    thisFrameTime = (thisLoop=new Date) - lastLoop;
+    frameTime+= (thisFrameTime - frameTime) / filterStrength;
+    lastLoop = thisLoop;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -116,3 +121,8 @@ Game.run = (function() {
 
     window.onEachFrame = onEachFrame;
 })();
+
+/* -------------------------------------------------------------------------- */
+setInterval(function(){
+  console.log((1000/frameTime).toFixed(1) + " fps");
+},1000);
