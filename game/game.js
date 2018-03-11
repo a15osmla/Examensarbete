@@ -4,7 +4,6 @@ var Player = {};
 var keys = {};
 var lastLoop = new Date;
 
-
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
 Game.fps = 60;
@@ -52,6 +51,14 @@ Game.update = function(tick) {
 
 /* -------------------------------------------------------------------------- */
 Game.input = function() {
+    if (keys[68]) {
+        Player.x = Player.x+2;
+        Game.drawGFX();
+    }
+    if (keys[65]) {
+        Player.x = Player.x-2;
+        Game.drawGFX();
+    }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -59,7 +66,6 @@ Game.pause = function() {
    this.paused = (this.paused) ? false : true;
 };
 
-var lastLoop = new Date;
 Game.run = (function() {
     var loops = 0;
     var nextGameTick = (new Date).getTime();
