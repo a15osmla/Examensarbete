@@ -1,6 +1,5 @@
 var ctx, width, height, canvas;
-var Game = {};
-var Player = {};    
+var Game = {};  
 var keys = {};
 var filterStrength = 20;
 var frameTime = 0, lastLoop = new Date, thisLoop, thisFrameTime;
@@ -11,10 +10,16 @@ Game.fps = 60;
 Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
 
-Player.x = Game.width / 10;
-Player.y = Game.height- (Game.height/2);
-Player.width = Game.width / 13;
-Player.height = Game.height / 2.5;
+function Player(x, y, width, height, speed) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.speed = speed;
+}
+
+var p1 = new Player(Game.width * 0.2, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 2);
+var p2 = new Player(Game.width * 0.8, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 2);
 
 /* -------------------------------------------------------------------------- */
 document.addEventListener("keydown", function (e) {
@@ -29,8 +34,20 @@ document.addEventListener("keyup", function (e) {
 Game.drawGFX = function() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "white";
-    ctx.fillRect(Player.x, Player.y, Player.width, Player.height);
+    
+    p1.image = new Image();
+    p1.image.src = 'img/tempplayer.png';
+    ctx.drawImage(p1.image, 
+    p1.x,
+    p1.y,
+    p1.width, p1.height);
+    
+    p2.image = new Image();
+    p2.image.src = 'img/tempplayer.png';
+    ctx.drawImage(p2.image, 
+    p2.x,
+    p2.y,
+    p2.width, p2.height);
 };
 
 /* -------------------------------------------------------------------------- */
@@ -57,11 +74,11 @@ Game.update = function(tick) {
 /* -------------------------------------------------------------------------- */
 Game.input = function() {
     if (keys[68]) {
-        Player.x = Player.x+2;
+        p1.x = p1.x+2;
         Game.drawGFX();
     }
     if (keys[65]) {
-        Player.x = Player.x-2;
+        p1.x = p1.x-2;
         Game.drawGFX();
     }
 }
