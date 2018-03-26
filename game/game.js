@@ -16,10 +16,24 @@ function Player(x, y, width, height, speed) {
     this.width = width;
     this.height = height;
     this.speed = speed;
+    this.grounded = false;
+    this.jumping = false;
+    this.velY = 8;
+    this.velX = 8;
+    this.startY = y;
+    this.gravity = 0.1;
+    this.moving = function(dir) {
+        if(dir == "right") {
+            this.x = this.x+this.speed;
+        } 
+        else if(dir == "left") {
+            this.x = this.x-this.speed;
+        } 
+    }
 }
 
-var p1 = new Player(Game.width * 0.2, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 2);
-var p2 = new Player(Game.width * 0.8, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 2);
+var p1 = new Player(Game.width * 0.2, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
+var p2 = new Player(Game.width * 0.8, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
 
 /* -------------------------------------------------------------------------- */
 document.addEventListener("keydown", function (e) {
@@ -31,9 +45,12 @@ document.addEventListener("keyup", function (e) {
 });
 
 /* -------------------------------------------------------------------------- */
-Game.drawGFX = function() {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+Game.drawGFX = function() {    
+    ctx.fillStyle = "green";
+    ctx.fillRect(0, canvas.height * 0.8, canvas.width, canvas.height*0.9);
+    
+    ctx.fillStyle = "#a2a2ff";
+    ctx.fillRect(0, canvas.height * 0.0, canvas.width, canvas.height*0.8);
     
     p1.image = new Image();
     p1.image.src = 'img/tempplayer.png';
@@ -69,19 +86,45 @@ Game.update = function(tick) {
     thisFrameTime = (thisLoop=new Date) - lastLoop;
     frameTime+= (thisFrameTime - frameTime) / filterStrength;
     lastLoop = thisLoop;
+    
+    var contact = colCheck(p2,p1);
+    if(contact == "l") {
+        console.log("Hit right");
+        p1.grounded = true;
+    }
 }
 
 /* -------------------------------------------------------------------------- */
 Game.input = function() {
     if (keys[68]) {
-        p1.x = p1.x+2;
+        p1.moving("right");
         Game.drawGFX();
     }
     if (keys[65]) {
-        p1.x = p1.x-2;
+        p1.moving("left");
         Game.drawGFX();
     }
+    
+    if (keys[87]) {
+       p1.jumping = true;
+    }
+    
+    if(p1.jumping === true) {
+        p1.y = p1.y - p1.velY;
+        p1.velY -= p1.gravity; 
+        Game.drawGFX();
+    } 
+    
+    if(p1.y === p1.startY){
+        p1.jumping = false;
+        Game.drawGFX();
+    }
+    
+    console.log(p1.startY);
+    console.log(p1.y);
 }
+       
+   
 
 /* -------------------------------------------------------------------------- */
 Game.pause = function() {
@@ -102,6 +145,46 @@ Game.run = (function() {
         }
     };
 })();
+/* -------------------------------------------------------------------------- */
+function colCheck(shapeA, shapeB) {
+    // get the vectors to check against
+    var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
+        vY = (shapeA.y + (shapeA.height / 2)) - (shapeB.y + (shapeB.height / 2)),
+        // add the half widths and half heights of the objects
+        hWidths = (shapeA.width / 2) + (shapeB.width / 2),
+        hHeights = (shapeA.height / 2) + (shapeB.height / 2),
+        colDir = null;
+    /*
+    console.log(vX);
+    console.log(vY);
+    console.log(hWidths);
+    console.log(hHeights);
+    
+    */
+    if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
+
+        var oX = hWidths - Math.abs(vX),
+            oY = hHeights - Math.abs(vY);
+        if (oX >= oY) {
+            if (vY > 0) {
+                colDir = "t";
+                shapeA.y += oY;
+            } else {
+                colDir = "b";
+                shapeA.y -= oY;
+            }
+        } else {
+            if (vX > 0) {
+                colDir = "l";
+                shapeA.x += oX;
+            } else {
+                colDir = "r";
+                shapeA.x -= oX;
+            }
+        }
+    }
+    return colDir;
+}
 
 /* -------------------------------------------------------------------------- */
 (function() {
