@@ -18,10 +18,11 @@ function Player(x, y, width, height, speed) {
     this.speed = speed;
     this.grounded = false;
     this.jumping = false;
-    this.velY = 8;
-    this.velX = 8;
+    this.velY = 0;
+    this.velX = 0;
     this.startY = y;
-    this.gravity = 0.1;
+    this.gravity = 2;
+    this.hp = 100;
     this.moving = function(dir) {
         if(dir == "right") {
             this.x = this.x+this.speed;
@@ -46,26 +47,30 @@ document.addEventListener("keyup", function (e) {
 
 /* -------------------------------------------------------------------------- */
 Game.drawGFX = function() {    
+    
+    Game.drawWorld();
+    Game.drawPlayer(p1);
+    Game.drawPlayer(p2);
+};
+
+/* -------------------------------------------------------------------------- */
+Game.drawWorld = function() {
     ctx.fillStyle = "green";
     ctx.fillRect(0, canvas.height * 0.8, canvas.width, canvas.height*0.9);
     
     ctx.fillStyle = "#a2a2ff";
     ctx.fillRect(0, canvas.height * 0.0, canvas.width, canvas.height*0.8);
-    
-    p1.image = new Image();
-    p1.image.src = 'img/tempplayer.png';
-    ctx.drawImage(p1.image, 
-    p1.x,
-    p1.y,
-    p1.width, p1.height);
-    
-    p2.image = new Image();
-    p2.image.src = 'img/tempplayer.png';
-    ctx.drawImage(p2.image, 
-    p2.x,
-    p2.y,
-    p2.width, p2.height);
-};
+}
+
+/* ----------------------------------------------------------------------- */
+Game.drawPlayer = function(player) {
+    player.image = new Image();
+    player.image.src = 'img/tempplayer.png';
+    ctx.drawImage(player.image, 
+    player.x,
+    player.y,
+    player.width, player.height);
+}
 
 /* -------------------------------------------------------------------------- */
 Game.initialize = function() {
@@ -98,30 +103,33 @@ Game.update = function(tick) {
 Game.input = function() {
     if (keys[68]) {
         p1.moving("right");
-        Game.drawGFX();
+
     }
     if (keys[65]) {
         p1.moving("left");
-        Game.drawGFX();
     }
     
     if (keys[87]) {
-       p1.jumping = true;
-    }
-    
-    if(p1.jumping === true) {
-        p1.y = p1.y - p1.velY;
-        p1.velY -= p1.gravity; 
-        Game.drawGFX();
+        if(!p1.jumping) {
+            p1.jumping = true;
+            p1.velY = -p1.speed * 5;
+        }
     } 
     
-    if(p1.y === p1.startY){
-        p1.jumping = false;
-        Game.drawGFX();
+    // If player is jumping change player y position and reduce velocity based on gravity
+    if(p1.jumping) {
+        p1.y += p1.velY;
+        p1.velY += p1.gravity; 
     }
     
-    console.log(p1.startY);
-    console.log(p1.y);
+    //Check if player is on the ground
+    if(p1.y >= p1.startY){
+        p1.jumping = false;
+        p1.grounded = true;
+        p1.velY = 0;
+    }
+   
+    Game.drawGFX();
 }
        
    
@@ -154,13 +162,7 @@ function colCheck(shapeA, shapeB) {
         hWidths = (shapeA.width / 2) + (shapeB.width / 2),
         hHeights = (shapeA.height / 2) + (shapeB.height / 2),
         colDir = null;
-    /*
-    console.log(vX);
-    console.log(vY);
-    console.log(hWidths);
-    console.log(hHeights);
-    
-    */
+
     if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
 
         var oX = hWidths - Math.abs(vX),
