@@ -51,11 +51,13 @@ Game.drawGFX = function() {
     Game.drawWorld();
     Game.drawPlayer(p1);
     Game.drawPlayer(p2);
+    Game.drawUI();
+    Game.drawFPS();
 };
 
 /* -------------------------------------------------------------------------- */
 Game.drawWorld = function() {
-    ctx.fillStyle = "green";
+    ctx.fillStyle = "brown";
     ctx.fillRect(0, canvas.height * 0.8, canvas.width, canvas.height*0.9);
     
     ctx.fillStyle = "#a2a2ff";
@@ -70,6 +72,54 @@ Game.drawPlayer = function(player) {
     player.x,
     player.y,
     player.width, player.height);
+}
+
+/* --------------------------------------------------------------------- */
+Game.drawUI = function(){
+    var hp1 = p1.hp/10 * 0.1;
+    var hp2 = p2.hp/10 * 0.1;
+    
+    ctx.fillStyle = "gray";
+    ctx.fillRect(canvas.width * 0.05, canvas.height * 0.05, canvas.width * 0.4, canvas.height*0.05);
+    ctx.fillStyle = "gray";
+    ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4, canvas.height*0.05);
+    
+    
+    if(p1.hp >= 50) {
+        ctx.fillStyle = "green";
+        
+    } else if(p1.hp <= 50 && p2.hp >= 40) {
+        ctx.fillStyle = "yellow";
+    }
+    
+    else if(p1.hp < 40) {
+        ctx.fillStyle = "red";
+    }
+    
+    if(hp1 >=0 && hp1 <= 100) {
+        ctx.fillRect(canvas.width * 0.05, canvas.height * 0.05, canvas.width * 0.4 * hp1, canvas.height*0.05);
+    }
+
+    if(p2.hp >= 50) {
+        ctx.fillStyle = "green";
+        
+    } else if(p2.hp <= 50 && p2.hp >= 40) {
+        ctx.fillStyle = "yellow";
+    }
+    
+    else if(p2.hp < 40) {
+        ctx.fillStyle = "red";
+    }
+    
+    if(hp2 >=0 && hp2 <= 100) {
+        ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4 * hp2, canvas.height*0.05);
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+Game.drawFPS = function(){
+    ctx.font = ("20px Roboto Condensed");
+    ctx.strokeText((1000/frameTime).toFixed(1) + " FPS", canvas.width * 0.005 , canvas.height * 0.03 );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -94,9 +144,11 @@ Game.update = function(tick) {
     
     var contact = colCheck(p2,p1);
     if(contact == "l") {
-        console.log("Hit right");
-        p1.grounded = true;
+        if(p2.hp >= 0 && p2.hp <= 100) {
+            p2.hp -= 10;
+        }
     }
+    
 }
 
 /* -------------------------------------------------------------------------- */
@@ -107,6 +159,10 @@ Game.input = function() {
     }
     if (keys[65]) {
         p1.moving("left");
+    }
+    
+    if(keys[32]){
+       console.log("space"); 
     }
     
     if (keys[87]) {
@@ -122,7 +178,7 @@ Game.input = function() {
         p1.velY += p1.gravity; 
     }
     
-    //Check if player is on the ground
+    // Check if player is on the ground
     if(p1.y >= p1.startY){
         p1.jumping = false;
         p1.grounded = true;
@@ -223,8 +279,3 @@ function colCheck(shapeA, shapeB) {
 
     window.onEachFrame = onEachFrame;
 })();
-
-/* -------------------------------------------------------------------------- */
-setInterval(function(){
-  console.log((1000/frameTime).toFixed(1) + " fps");
-},1000);
