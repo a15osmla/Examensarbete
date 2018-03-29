@@ -10,6 +10,78 @@ Game.fps = 60;
 Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
 
+var sprite_sheet = {
+    frame_sets:[[0], [1,2,3,4,5]],// standing still, walk right, walk left
+    image:new Image()
+  };
+
+
+
+/* -------------------------------------------------------------------------- */
+document.addEventListener("keydown", function (e) {
+        keys[e.keyCode] = true;
+});
+
+document.addEventListener("keyup", function (e) {
+        keys[e.keyCode] = false;
+});
+
+/* -------------------------------------------------------------------------- */
+
+ /* Each sprite sheet tile is 16x16 pixels in dimension. */
+  var SPRITE_SIZE = 50;
+
+  /* The Animation class manages frames within an animation frame set. The frame
+  set is an array of values that correspond to the location of sprite images in
+  the sprite sheet. For example, a frame value of 0 would correspond to the first
+  sprite image / tile in the sprite sheet. By arranging these values in a frame set
+  array, you can create a sequence of frames that make an animation when played in
+  quick succession. */
+  var Animation = function(frame_set, delay) {
+    this.count = 0;// Counts the number of game cycles since the last frame change.
+    this.delay = delay;// The number of game cycles to wait until the next frame change.
+    this.frame = 0;// The value in the sprite sheet of the sprite image / tile to display.
+    this.frame_index = 0;// The frame's index in the current animation frame set.
+    this.frame_set = frame_set;// The current animation frame set that holds sprite tile values.
+  };
+
+  Animation.prototype = {
+
+    /* This changes the current animation frame set. For example, if the current
+    set is [0, 1], and the new set is [2, 3], it changes the set to [2, 3]. It also
+    sets the delay. */
+    change:function(frame_set, delay = 15) {
+
+      if (this.frame_set != frame_set) {// If the frame set is different:
+
+        this.count = 0;// Reset the count.
+        this.delay = delay;// Set the delay.
+        this.frame_index = 0;// Start at the first frame in the new frame set.
+        this.frame_set = frame_set;// Set the new frame set.
+        this.frame = this.frame_set[this.frame_index];// Set the new frame value.
+
+      }
+
+    },
+
+    /* Call this on each game cycle. */
+    update:function() {
+
+      this.count ++;// Keep track of how many cycles have passed since the last frame change.
+
+      if (this.count >= this.delay) {// If enough cycles have passed, we change the frame.
+
+        this.count = 0;// Reset the count.
+        /* If the frame index is on the last value in the frame set, reset to 0.
+        If the frame index is not on the last value, just add 1 to it. */
+        this.frame_index = (this.frame_index == this.frame_set.length - 1) ? 0 : this.frame_index + 1;
+        this.frame = this.frame_set[this.frame_index];// Change the current frame value.
+
+      }
+
+    }
+}
+
 function Player(x, y, width, height, speed) {
     this.x = x;
     this.y = y;
@@ -23,6 +95,7 @@ function Player(x, y, width, height, speed) {
     this.startY = y;
     this.gravity = 2;
     this.hp = 100;
+    this.animate = new Animation();
     this.moving = function(dir) {
         if(dir == "right") {
             this.x = this.x+this.speed;
@@ -35,16 +108,6 @@ function Player(x, y, width, height, speed) {
 
 var p1 = new Player(Game.width * 0.2, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
 var p2 = new Player(Game.width * 0.8, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
-
-/* -------------------------------------------------------------------------- */
-document.addEventListener("keydown", function (e) {
-        keys[e.keyCode] = true;
-});
-
-document.addEventListener("keyup", function (e) {
-        keys[e.keyCode] = false;
-});
-
 /* -------------------------------------------------------------------------- */
 Game.drawGFX = function() {    
     
@@ -66,6 +129,7 @@ Game.drawWorld = function() {
 
 /* ----------------------------------------------------------------------- */
 Game.drawPlayer = function(player) {
+    ctx.drawImage(sprite_sheet.image, p1.animate.frame * 30, 0, 30, 90, Math.floor(p1.x), Math.floor(p1.y), 300, 300);
     player.image = new Image();
     player.image.src = 'img/tempplayer.png';
     ctx.drawImage(player.image, 
@@ -124,6 +188,7 @@ Game.drawFPS = function(){
 
 /* -------------------------------------------------------------------------- */
 Game.initialize = function() {
+    sprite_sheet.image.src = "img/base_undead.png";
     canvas = document.getElementById("gamecanvas");
     if (canvas && canvas.getContext) {
         ctx = canvas.getContext("2d");
@@ -155,6 +220,7 @@ Game.update = function(tick) {
 Game.input = function() {
     if (keys[68]) {
         p1.moving("right");
+        p1.animate.change(sprite_sheet.frame_sets[1], 10);
 
     }
     if (keys[65]) {
@@ -184,7 +250,7 @@ Game.input = function() {
         p1.grounded = true;
         p1.velY = 0;
     }
-   
+    p1.animate.update();
     Game.drawGFX();
 }
        
