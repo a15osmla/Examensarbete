@@ -178,6 +178,15 @@ Game.drawUI = function(){
     if(hp2 >=0 && hp2 <= 100) {
         ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4 * hp2, canvas.height*0.05);
     }
+    
+    ctx.font = ("Bold 30px Arial");
+    ctx.fillStyle = "black";
+    ctx.fillText("HP: " + p2.hp,canvas.width * 0.71, canvas.height * 0.14);
+    
+    ctx.font = ("Bold 30px Arial");
+    ctx.fillStyle = "black";
+    ctx.fillText("HP: " + p1.hp,canvas.width * 0.22, canvas.height * 0.14);
+    
 }
 
 /* -------------------------------------------------------------------------- */
