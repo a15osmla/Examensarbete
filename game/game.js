@@ -11,7 +11,7 @@ Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
 
 var sprite_sheet = {
-    frame_sets:[[0], [1,2,3,4,5]],// standing still, walk right, walk left
+    frame_sets:[[0], [1,2,3,4,5,6], [7,8,9], [10], [11,12,13], [14], [15,16,17,18,19,20]],
     image:new Image()
   };
 
@@ -129,13 +129,15 @@ Game.drawWorld = function() {
 
 /* ----------------------------------------------------------------------- */
 Game.drawPlayer = function(player) {
-    ctx.drawImage(sprite_sheet.image, p1.animate.frame * 30, 0, 30, 90, Math.floor(p1.x), Math.floor(p1.y), 300, 300);
+    ctx.drawImage(sprite_sheet.image, p1.animate.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(p1.x), Math.floor(p1.y), 300, 300);
+    /*
     player.image = new Image();
     player.image.src = 'img/tempplayer.png';
     ctx.drawImage(player.image, 
     player.x,
     player.y,
     player.width, player.height);
+    */
 }
 
 /* --------------------------------------------------------------------- */
@@ -197,7 +199,7 @@ Game.drawFPS = function(){
 
 /* -------------------------------------------------------------------------- */
 Game.initialize = function() {
-    sprite_sheet.image.src = "img/base_undead.png";
+    sprite_sheet.image.src = "img/spritesheet.png";
     canvas = document.getElementById("gamecanvas");
     if (canvas && canvas.getContext) {
         ctx = canvas.getContext("2d");
@@ -229,23 +231,45 @@ Game.update = function(tick) {
 Game.input = function() {
     if (keys[68]) {
         p1.moving("right");
+        p1.animate.update();
         p1.animate.change(sprite_sheet.frame_sets[1], 10);
-
+        
+        
+    } else {
+        p1.animate.change(sprite_sheet.frame_sets[0], 15);
     }
+        
+  
     if (keys[65]) {
+         p1.animate.update();
         p1.moving("left");
-    }
+        p1.animate.change(sprite_sheet.frame_sets[6], 10);
+       
+    } 
     
     if(keys[32]){
-       console.log("space"); 
+       console.log("space");
+        p1.animate.update();
+        p1.animate.change(sprite_sheet.frame_sets[4], 3);
+        p1.grounded = true;
+        
     }
     
+    p1.grounded = false;
+    
+    
+    
     if (keys[87]) {
+        p1.animate.update();
+        p1.animate.change(sprite_sheet.frame_sets[2], 2);
+        
         if(!p1.jumping) {
             p1.jumping = true;
             p1.velY = -p1.speed * 5;
         }
-    } 
+    }
+    
+ 
     
     // If player is jumping change player y position and reduce velocity based on gravity
     if(p1.jumping) {
@@ -259,7 +283,7 @@ Game.input = function() {
         p1.grounded = true;
         p1.velY = 0;
     }
-    p1.animate.update();
+    
     Game.drawGFX();
 }
        
