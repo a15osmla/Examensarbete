@@ -3,6 +3,7 @@ var Game = {};
 var keys = {};
 var filterStrength = 20;
 var frameTime = 0, lastLoop = new Date, thisLoop, thisFrameTime;
+var lastDir;
 
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
@@ -11,11 +12,19 @@ Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
 
 var sprite_sheet = {
-    frame_sets:[[0], [1,2,3,4,5,6], [7,8,9], [10], [11,12,13], [14], [15,16,17,18,19,20]],
+    frame_sets:[[0],// set 0: Stand right
+                [1,2,3,4,5,6],// set 1: Walk right
+                [7,8,9], // set 2: jump right
+                [10], // set 3: block right
+                [12,13], // set 4: punch right
+                [14], // set 5: stand left
+                [20,19,18,17,16,15], // set 6: walk left
+                [26,25], // set 7: punch left
+                [24], // set 8: block left
+                [23,22,21] // set 9: block left
+                ],
     image:new Image()
   };
-
-
 
 /* -------------------------------------------------------------------------- */
 document.addEventListener("keydown", function (e) {
@@ -50,16 +59,14 @@ document.addEventListener("keyup", function (e) {
     /* This changes the current animation frame set. For example, if the current
     set is [0, 1], and the new set is [2, 3], it changes the set to [2, 3]. It also
     sets the delay. */
-    change:function(frame_set, delay = 15) {
+    change:function(frame_set, delay = 5) {
 
       if (this.frame_set != frame_set) {// If the frame set is different:
-
         this.count = 0;// Reset the count.
         this.delay = delay;// Set the delay.
         this.frame_index = 0;// Start at the first frame in the new frame set.
         this.frame_set = frame_set;// Set the new frame set.
         this.frame = this.frame_set[this.frame_index];// Set the new frame value.
-
       }
 
     },
@@ -76,7 +83,6 @@ document.addEventListener("keyup", function (e) {
         If the frame index is not on the last value, just add 1 to it. */
         this.frame_index = (this.frame_index == this.frame_set.length - 1) ? 0 : this.frame_index + 1;
         this.frame = this.frame_set[this.frame_index];// Change the current frame value.
-
       }
 
     }
@@ -181,11 +187,11 @@ Game.drawUI = function(){
         ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4 * hp2, canvas.height*0.05);
     }
     
-    ctx.font = ("Bold 30px Arial");
+    ctx.font = (0.03 * canvas.height + "px Arial");
     ctx.fillStyle = "black";
     ctx.fillText("HP: " + p2.hp,canvas.width * 0.71, canvas.height * 0.14);
     
-    ctx.font = ("Bold 30px Arial");
+    ctx.font = (0.03 * canvas.height + "px Arial");
     ctx.fillStyle = "black";
     ctx.fillText("HP: " + p1.hp,canvas.width * 0.22, canvas.height * 0.14);
     
@@ -193,8 +199,9 @@ Game.drawUI = function(){
 
 /* -------------------------------------------------------------------------- */
 Game.drawFPS = function(){
-    ctx.font = ("20px Roboto Condensed");
-    ctx.strokeText((1000/frameTime).toFixed(1) + " FPS", canvas.width * 0.005 , canvas.height * 0.03 );
+    
+    ctx.font = (0.05 * canvas.height + "px Roboto Condensed");
+    ctx.strokeText((1000/frameTime).toFixed(1) + " FPS", canvas.width * 0.005 , canvas.height * 0.04 );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -224,52 +231,90 @@ Game.update = function(tick) {
             p2.hp -= 10;
         }
     }
-    
 }
 
 /* -------------------------------------------------------------------------- */
-Game.input = function() {
+Game.input = function() { 
+    if (keys[87]) {
+            if(!p1.jumping) {
+                    p1.jumping = true;
+                    p1.velY = -p1.speed * 5;
+            }
+            if(lastDir == "left") {
+                p1.animate.change(sprite_sheet.frame_sets[9], 8);  
+            } else {
+                p1.animate.change(sprite_sheet.frame_sets[2], 8);  
+            } 
+    }
+
+    // Move right - d   
     if (keys[68]) {
         p1.moving("right");
-        p1.animate.update();
-        p1.animate.change(sprite_sheet.frame_sets[1], 10);
+        p1.animate.change(sprite_sheet.frame_sets[1], 15);
+        lastDir = "right";
         
-        
-    } else {
-        p1.animate.change(sprite_sheet.frame_sets[0], 15);
-    }
-        
+        if (keys[87]) {
+            if(!p1.jumping) {
+                    p1.jumping = true;
+                    p1.velY = -p1.speed * 5;
+            }
+            if(lastDir == "left") {
+                p1.animate.change(sprite_sheet.frame_sets[9], 8);  
+            } else {
+                p1.animate.change(sprite_sheet.frame_sets[2], 8);  
+            } 
+        }
+    } 
   
-    if (keys[65]) {
-         p1.animate.update();
+    // Move left - a
+    else if (keys[65]) {
         p1.moving("left");
-        p1.animate.change(sprite_sheet.frame_sets[6], 10);
-       
+        p1.animate.change(sprite_sheet.frame_sets[6], 15);
+        lastDir = "left";
+        
+        if (keys[87]) {
+            if(!p1.jumping) {
+                    p1.jumping = true;
+                    p1.velY = -p1.speed * 5;
+            }
+            if(lastDir == "left") {
+                p1.animate.change(sprite_sheet.frame_sets[9], 8);  
+            } else {
+                p1.animate.change(sprite_sheet.frame_sets[2], 8);  
+            } 
+        }
     } 
     
-    if(keys[32]){
-       console.log("space");
-        p1.animate.update();
-        p1.animate.change(sprite_sheet.frame_sets[4], 3);
-        p1.grounded = true;
-        
-    }
-    
-    p1.grounded = false;
     
     
-    
-    if (keys[87]) {
-        p1.animate.update();
-        p1.animate.change(sprite_sheet.frame_sets[2], 2);
-        
-        if(!p1.jumping) {
-            p1.jumping = true;
-            p1.velY = -p1.speed * 5;
+    // Punch - space
+    else if(keys[32]){
+        if(lastDir == "left") {
+            p1.animate.change(sprite_sheet.frame_sets[7], 15);  
+        } else {
+            p1.animate.change(sprite_sheet.frame_sets[4], 15);
         }
     }
     
- 
+    
+    
+   
+   // Block - shift
+   else if (keys[16]) {
+       if(lastDir == "left") {
+            p1.animate.change(sprite_sheet.frame_sets[8], 15); 
+        } else {
+            p1.animate.change(sprite_sheet.frame_sets[3], 15);
+        }
+   }
+
+    else{ 
+        if(lastDir == "left") {
+            p1.animate.change(sprite_sheet.frame_sets[5], 15);   
+        }else {
+            p1.animate.change(sprite_sheet.frame_sets[0], 15);
+        }    
+    }
     
     // If player is jumping change player y position and reduce velocity based on gravity
     if(p1.jumping) {
@@ -282,12 +327,10 @@ Game.input = function() {
         p1.jumping = false;
         p1.grounded = true;
         p1.velY = 0;
-    }
-    
+    }   
+    p1.animate.update();  
     Game.drawGFX();
 }
-       
-   
 
 /* -------------------------------------------------------------------------- */
 Game.pause = function() {
