@@ -12,6 +12,7 @@ Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
 
 var sprite_sheet = {
+    // P1
     frame_sets:[[0],// set 0: Stand right
                 [1,2,3,4,5,6],// set 1: Walk right
                 [7,8,9], // set 2: jump right
@@ -23,6 +24,9 @@ var sprite_sheet = {
                 [24], // set 8: block left
                 [23,22,21] // set 9: block left
                 ],
+    // P2
+    frame_sets2:[[28] //  
+    ],
     image:new Image()
   };
 
@@ -96,6 +100,7 @@ function Player(x, y, width, height, speed) {
     this.speed = speed;
     this.grounded = false;
     this.jumping = false;
+    this.blocking = false;
     this.velY = 0;
     this.velX = 0;
     this.startY = y;
@@ -112,8 +117,10 @@ function Player(x, y, width, height, speed) {
     }
 }
 
-var p1 = new Player(Game.width * 0.2, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
-var p2 = new Player(Game.width * 0.8, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
+
+var p1 = new Player(Game.width * 0.01, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
+var p2 = new Player(Game.width * 0.80, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
+
 /* -------------------------------------------------------------------------- */
 Game.drawGFX = function() {    
     
@@ -135,15 +142,13 @@ Game.drawWorld = function() {
 
 /* ----------------------------------------------------------------------- */
 Game.drawPlayer = function(player) {
-    ctx.drawImage(sprite_sheet.image, p1.animate.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(p1.x), Math.floor(p1.y), 300, 300);
-    /*
-    player.image = new Image();
-    player.image.src = 'img/tempplayer.png';
-    ctx.drawImage(player.image, 
-    player.x,
-    player.y,
-    player.width, player.height);
-    */
+    ctx.drawImage(sprite_sheet.image, p1.animate.frame * SPRITE_SIZE, 0, 45, 50,
+    p1.x, p1.y, canvas.width * 0.2, canvas.height * 0.4);
+    ctx.strokeRect(p1.x, p1.y, canvas.width * 0.2, canvas.height * 0.4);
+    
+    ctx.drawImage(sprite_sheet.image, p2.animate.frame * SPRITE_SIZE, 0, 45, 50,
+    p2.x, p2.y, canvas.width * 0.2, canvas.height * 0.4);
+    ctx.strokeRect(p2.x, p2.y, canvas.width * 0.2, canvas.height * 0.4);
 }
 
 /* --------------------------------------------------------------------- */
@@ -195,27 +200,46 @@ Game.drawUI = function(){
     ctx.fillStyle = "black";
     ctx.fillText("HP: " + p1.hp,canvas.width * 0.22, canvas.height * 0.14);
     
+    ctx.font = (0.05 * canvas.height + "px Arial");
+    ctx.fillStyle = "green";
+    ctx.fillText("P1", p1.x+154, p1.y);
+    
+    ctx.font = (0.05 * canvas.height + "px Arial");
+    ctx.fillStyle = "black";
+    ctx.fillText("P2", p2.x+154, p2.y);
+    
+
+    
 }
 
 /* -------------------------------------------------------------------------- */
 Game.drawFPS = function(){
-    
     ctx.font = (0.05 * canvas.height + "px Roboto Condensed");
     ctx.strokeText((1000/frameTime).toFixed(1) + " FPS", canvas.width * 0.005 , canvas.height * 0.04 );
 }
+
 
 /* -------------------------------------------------------------------------- */
 Game.initialize = function() {
     sprite_sheet.image.src = "img/spritesheet.png";
     canvas = document.getElementById("gamecanvas");
+    
     if (canvas && canvas.getContext) {
         ctx = canvas.getContext("2d");
         canvas.width = Game.width;
         canvas.height = Game.height;
-        Game.drawGFX();
+       
     }
 };
 
+resize = function() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    Game.width = window.innerWidth;
+    Game.height = window.innerHeight;
+};
+    
+window.addEventListener("resize", resize);
 /* -------------------------------------------------------------------------- */
 Game.update = function(tick) {
     Game.tick = tick; 
@@ -225,16 +249,13 @@ Game.update = function(tick) {
     frameTime+= (thisFrameTime - frameTime) / filterStrength;
     lastLoop = thisLoop;
     
-    var contact = colCheck(p2,p1);
-    if(contact == "l") {
-        if(p2.hp >= 0 && p2.hp <= 100) {
-            p2.hp -= 10;
-        }
-    }
+   
 }
 
 /* -------------------------------------------------------------------------- */
 Game.input = function() { 
+    p2.animate.change(sprite_sheet.frame_sets2[0], 8);
+   
     if (keys[87]) {
             if(!p1.jumping) {
                     p1.jumping = true;
@@ -285,20 +306,23 @@ Game.input = function() {
         }
     } 
     
-    
-    
     // Punch - space
     else if(keys[32]){
         if(lastDir == "left") {
-            p1.animate.change(sprite_sheet.frame_sets[7], 15);  
+            p1.animate.change(sprite_sheet.frame_sets[7], 15); 
         } else {
             p1.animate.change(sprite_sheet.frame_sets[4], 15);
         }
+        var contact = colCheck(p2,p1);
+        if(contact == "l" || contact == "r") {
+            if(p2 != blocking) {
+                if(p2.hp >= 0 && p2.hp <= 100) {
+                    p2.hp -= 10;
+                }
+            }  
+        }
     }
     
-    
-    
-   
    // Block - shift
    else if (keys[16]) {
        if(lastDir == "left") {
@@ -327,8 +351,25 @@ Game.input = function() {
         p1.jumping = false;
         p1.grounded = true;
         p1.velY = 0;
-    }   
-    p1.animate.update();  
+    }
+    
+    if(p1.x >= canvas.width - 220){    
+        if(lastDir == "right") {
+            p1.speed = 0 ;
+        } else {
+            p1.speed = 5;
+        }
+    } 
+    if (p1.x <= -130) {
+       if(lastDir == "left") {
+            p1.speed = 0 ;
+        } else {
+            p1.speed = 5;
+        }
+    }
+    
+    p1.animate.update();
+    p2.animate.update();  
     Game.drawGFX();
 }
 
