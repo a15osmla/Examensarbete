@@ -10,6 +10,7 @@ Game.height = window.innerHeight;
 Game.fps = 60;
 Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
+Game.oldTick;
 
 var sprite_sheet = {
     // P1
@@ -17,10 +18,10 @@ var sprite_sheet = {
                 [1,2,3,4,5,6],// set 1: Walk right
                 [7,8,9], // set 2: jump right
                 [10], // set 3: block right
-                [12,13], // set 4: punch right
+                [13,12], // set 4: punch right
                 [14], // set 5: stand left
                 [20,19,18,17,16,15], // set 6: walk left
-                [26,25], // set 7: punch left
+                [25,26], // set 7: punch left
                 [24], // set 8: block left
                 [23,22,21] // set 9: block left
                 ],
@@ -52,6 +53,7 @@ document.addEventListener("keyup", function (e) {
   quick succession. */
   var Animation = function(frame_set, delay) {
     this.count = 0;// Counts the number of game cycles since the last frame change.
+      
     this.delay = delay;// The number of game cycles to wait until the next frame change.
     this.frame = 0;// The value in the sprite sheet of the sprite image / tile to display.
     this.frame_index = 0;// The frame's index in the current animation frame set.
@@ -59,6 +61,7 @@ document.addEventListener("keyup", function (e) {
   };
 
   Animation.prototype = {
+      
 
     /* This changes the current animation frame set. For example, if the current
     set is [0, 1], and the new set is [2, 3], it changes the set to [2, 3]. It also
@@ -72,6 +75,7 @@ document.addEventListener("keyup", function (e) {
         this.frame_set = frame_set;// Set the new frame set.
         this.frame = this.frame_set[this.frame_index];// Set the new frame value.
       }
+        
 
     },
 
@@ -79,7 +83,7 @@ document.addEventListener("keyup", function (e) {
     update:function() {
 
       this.count ++;// Keep track of how many cycles have passed since the last frame change.
-
+            
       if (this.count >= this.delay) {// If enough cycles have passed, we change the frame.
 
         this.count = 0;// Reset the count.
@@ -89,6 +93,11 @@ document.addEventListener("keyup", function (e) {
         this.frame = this.frame_set[this.frame_index];// Change the current frame value.
       }
 
+    },
+      
+    // Get the current frame_index
+    getFrame:function() {
+        return this.frame_index;
     }
 }
 
@@ -119,14 +128,13 @@ function Player(x, y, width, height, speed) {
 
 
 var p1 = new Player(Game.width * 0.01, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
-var p2 = new Player(Game.width * 0.80, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
+var p2 = new Player(Game.width * 0.10, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
 
 /* -------------------------------------------------------------------------- */
 Game.drawGFX = function() {    
     
     Game.drawWorld();
     Game.drawPlayer(p1);
-    Game.drawPlayer(p2);
     Game.drawUI();
     Game.drawFPS();
 };
@@ -144,11 +152,9 @@ Game.drawWorld = function() {
 Game.drawPlayer = function(player) {
     ctx.drawImage(sprite_sheet.image, p1.animate.frame * SPRITE_SIZE, 0, 45, 50,
     p1.x, p1.y, canvas.width * 0.2, canvas.height * 0.4);
-    ctx.strokeRect(p1.x, p1.y, canvas.width * 0.2, canvas.height * 0.4);
     
     ctx.drawImage(sprite_sheet.image, p2.animate.frame * SPRITE_SIZE, 0, 45, 50,
     p2.x, p2.y, canvas.width * 0.2, canvas.height * 0.4);
-    ctx.strokeRect(p2.x, p2.y, canvas.width * 0.2, canvas.height * 0.4);
 }
 
 /* --------------------------------------------------------------------- */
@@ -244,17 +250,15 @@ window.addEventListener("resize", resize);
 Game.update = function(tick) {
     Game.tick = tick; 
     Game.input();
-   
     thisFrameTime = (thisLoop=new Date) - lastLoop;
     frameTime+= (thisFrameTime - frameTime) / filterStrength;
     lastLoop = thisLoop;
-    
-   
 }
 
 /* -------------------------------------------------------------------------- */
 Game.input = function() { 
     p2.animate.change(sprite_sheet.frame_sets2[0], 8);
+    
    
     if (keys[87]) {
             if(!p1.jumping) {
@@ -267,7 +271,7 @@ Game.input = function() {
                 p1.animate.change(sprite_sheet.frame_sets[2], 8);  
             } 
     }
-
+    
     // Move right - d   
     if (keys[68]) {
         p1.moving("right");
@@ -313,14 +317,20 @@ Game.input = function() {
         } else {
             p1.animate.change(sprite_sheet.frame_sets[4], 15);
         }
+        
+        
         var contact = colCheck(p2,p1);
-        if(contact == "l" || contact == "r") {
-            if(p2 != blocking) {
-                if(p2.hp >= 0 && p2.hp <= 100) {
-                    p2.hp -= 10;
+        var currentFrame = p1.animate.getFrame();
+  
+        if (contact == "r"  && p2.hp > 10 || contact == "l" && p2.hp > 10) {
+                if(contact == "r" || contact == "l") {
+                      if(currentFrame == 0) {
+                        p2.hp -= 5;
+                        console.log("hit R");   
+                      }
                 }
-            }  
-        }
+        }   
+        
     }
     
    // Block - shift
@@ -362,7 +372,7 @@ Game.input = function() {
     } 
     if (p1.x <= -130) {
        if(lastDir == "left") {
-            p1.speed = 0 ;
+            p1. speed = 0 ;
         } else {
             p1.speed = 5;
         }
