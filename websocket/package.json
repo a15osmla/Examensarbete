@@ -1,0 +1,16 @@
+{
+  "name": "gameio",
+  "version": "1.0.0",
+  "description": "simple fighting game",
+  "main": "server.js",
+  "dependencies": {
+    "socket.io": "*",
+    "express": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Osmaro Landaverde",
+  "license": "ISC"
+}
