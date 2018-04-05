@@ -2,13 +2,21 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require("socket.io").listen(server);
+var path = require('path');
+var bodyParser = require('body-parser');
+
 players = [];
 connections = [];
 
-server.listen(process.env.PORT || 1337);
-console.log('server running')
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.static(path.join(__dirname, 'public')));
+
+server.listen(process.env.PORT || 1337);    
+
 app.get('/', function(req, res) {
-        res.sendFile(__dirname + '/index.html'); 
+    res.sendFile(__dirname + '/index.html'); 
 });
 
 io.sockets.on('connection', function(socket) {
@@ -23,4 +31,6 @@ io.sockets.on('connection', function(socket) {
     socket.on("send message", function(data){
         io.sockets.emit('new message', {msg: data});
     });
+    
+
 })

@@ -363,6 +363,8 @@ Game.input = function() {
         p1.velY = 0;
     }
     
+    
+    //
     if(p1.x >= canvas.width - 220){    
         if(lastDir == "right") {
             p1.speed = 0 ;
@@ -388,6 +390,7 @@ Game.pause = function() {
    this.paused = (this.paused) ? false : true;
 };
 
+/* -------------------------------------------------------------------------- */
 Game.run = (function() {
     var loops = 0;
     var nextGameTick = (new Date).getTime();
