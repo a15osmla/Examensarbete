@@ -131,8 +131,7 @@ var p1 = new Player(Game.width * 0.01, Game.height * 0.5, Game.width * 0.1, Game
 var p2 = new Player(Game.width * 0.10, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
 
 /* -------------------------------------------------------------------------- */
-Game.drawGFX = function() {    
-    
+Game.drawGFX = function() {
     Game.drawWorld();
     Game.drawPlayer(p1);
     Game.drawUI();
@@ -189,6 +188,8 @@ Game.drawUI = function(){
     } else if(p2.hp <= 50 && p2.hp >= 40) {
         ctx.fillStyle = "yellow";
     }
+    
+    
     
     else if(p2.hp < 40) {
         ctx.fillStyle = "red";

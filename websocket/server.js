@@ -1,23 +1,22 @@
-var express = require('express');
-var app = express();
+var express=require("express");
+var app=express();
+app.use(express.static(__dirname + '/public'));
 var server = require('http').createServer(app);
 var io = require("socket.io").listen(server);
-var path = require('path');
+const path = require('path');
 var bodyParser = require('body-parser');
 
 players = [];
 connections = [];
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(express.static(path.join(__dirname, 'public')));
-
-server.listen(process.env.PORT || 1337);    
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html'); 
+    res.sendFile(__dirname + '/views/index.html');    
+    //res.render('index'); 
 });
+
 
 io.sockets.on('connection', function(socket) {
     connections.push(socket);
@@ -34,3 +33,11 @@ io.sockets.on('connection', function(socket) {
     
 
 })
+
+// Assign a player on connection
+
+// server tasks
+// update player position
+// Handle player collision
+
+server.listen(process.env.PORT || 1337);

@@ -4,8 +4,10 @@
   "description": "simple fighting game",
   "main": "server.js",
   "dependencies": {
-    "socket.io": "*",
-    "express": "*"
+    "body-parser": "*",
+    "ejs": "^2.5.8",
+    "express": "^4.16.3",
+    "socket.io": "*"
   },
   "devDependencies": {},
   "scripts": {
