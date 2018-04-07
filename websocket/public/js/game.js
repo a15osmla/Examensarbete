@@ -1,12 +1,58 @@
 var Game = {};
+var keys = {};
+var socket = io.connect();
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
 Game.fps = 60;
 Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
+var sprite_sheet = {
+    // P1
+    frame_sets:[[0],// set 0: Stand right
+                [1,2,3,4,5,6],// set 1: Walk right
+                [7,8,9], // set 2: jump right
+                [10], // set 3: block right
+                [13,12], // set 4: punch right
+                [14], // set 5: stand left
+                [20,19,18,17,16,15], // set 6: walk left
+                [25,26], // set 7: punch left
+                [24], // set 8: block left
+                [23,22,21] // set 9: block left
+                ],
+    // P2
+    frame_sets2:[[28] //  
+    ],
+    image:new Image()
+  };
+
+
 /* -------------------------------------------------------------------------- */
+document.addEventListener("keydown", function (e) {
+        keys[e.keyCode] = true;
+});
 
+document.addEventListener("keyup", function (e) {
+        keys[e.keyCode] = false;
+});
 
+/* -------------------------------------------------------------------------- */
+Game.drawGFX = function() {
+    Game.drawWorld();
+    //Game.drawPlayer(p1);
+    //sGame.drawUI();
+    //Game.drawFPS();
+};  
+
+/* -------------------------------------------------------------------------- */
+Game.drawWorld = function() {
+    ctx.fillStyle = "brown";
+    ctx.fillRect(0, canvas.height * 0.8, canvas.width, canvas.height*0.9);
+    
+    ctx.fillStyle = "#a2a2ff";
+    ctx.fillRect(0, canvas.height * 0.0, canvas.width, canvas.height*0.8);
+}
+
+/* -------------------------------------------------------------------------- 
 Game.drawUI = function(){
     var hp1 = p1.hp/10 * 0.1;
     var hp2 = p2.hp/10 * 0.1;
@@ -69,30 +115,8 @@ Game.drawUI = function(){
     
 }
 /* -------------------------------------------------------------------------- */
-Game.drawWorld = function() {
-    ctx.fillStyle = "brown";
-    ctx.fillRect(0, canvas.height * 0.8, canvas.width, canvas.height*0.9);
-    
-    ctx.fillStyle = "#a2a2ff";
-    ctx.fillRect(0, canvas.height * 0.0, canvas.width, canvas.height*0.8);
-}
-
-
-Game.initialize = function() {
-    // sprite_sheet.image.src = "/img/spritesheet.png";
-    canvas = document.getElementById("gamecanvas");
-    
-    if (canvas && canvas.getContext) {
-        ctx = canvas.getContext("2d");
-        canvas.width = Game.width;
-        canvas.height = Game.height;
-        console.log("hej");
-    }
-};
-
-Game.input = function() { 
+/*Game.input = function() { 
     p2.animate.change(sprite_sheet.frame_sets2[0], 8);
-    
    
     if (keys[87]) {
             if(!p1.jumping) {
@@ -181,6 +205,7 @@ Game.input = function() {
             p1.animate.change(sprite_sheet.frame_sets[5], 15);   
         }else {
             p1.animate.change(sprite_sheet.frame_sets[0], 15);
+            *
         }    
     }
     
@@ -217,4 +242,81 @@ Game.input = function() {
     p1.animate.update();
     p2.animate.update();  
     Game.drawGFX();
+}*/
+
+/* -------------------------------------------------------------------------- */
+Game.pause = function() {
+   this.paused = (this.paused) ? false : true;
+};
+
+Game.update = function(tick) {
+    Game.tick = tick; 
+    //Game.input();
 }
+
+/* -------------------------------------------------------------------------- */
+Game.run = (function() {
+    var loops = 0;
+    var nextGameTick = (new Date).getTime();
+    var startTime = (new Date).getTime();
+    
+    return function() {
+        loops = 0;
+        while (!Game.paused && (new Date).getTime() > nextGameTick && loops < Game.maxFrameSkip) {
+            Game.update(nextGameTick - startTime);
+            nextGameTick += Game.skipTicks;
+            loops++;
+        }
+    };
+})();
+
+/* -------------------------------------------------------------------------- */
+Game.initialize = function() {
+    sprite_sheet.image.src = "/img/spritesheet.png";
+    canvas = document.getElementById("gamecanvas");
+    
+    
+    if (canvas && canvas.getContext) {
+        ctx = canvas.getContext("2d");
+        canvas.width = Game.width;
+        canvas.height = Game.height;
+        Game.drawGFX();
+    }
+};
+
+
+/* -------------------------------------------------------------------------- */
+(function() {
+    var onEachFrame;
+    if (window.requestAnimationFrame) {
+       onEachFrame = function(cb) {
+          var _cb = function() {
+                cb();
+             requestAnimationFrame(_cb);
+          };
+          _cb();
+       };
+    } else if (window.webkitRequestAnimationFrame) {
+       onEachFrame = function(cb) {
+          var _cb = function() {
+             cb();
+             webkitRequestAnimationFrame(_cb);
+          };
+          _cb();
+       };
+    } else if (window.mozRequestAnimationFrame) {
+        onEachFrame = function(cb) {
+            var _cb = function() {
+                cb();
+                mozRequestAnimationFrame(_cb);
+            };
+            _cb();
+        };
+    } else {
+        onEachFrame = function(cb) {
+            setInterval(cb, Game.skipTicks);
+        };
+    }
+
+    window.onEachFrame = onEachFrame;
+})();

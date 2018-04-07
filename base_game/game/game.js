@@ -235,7 +235,6 @@ Game.initialize = function() {
         ctx = canvas.getContext("2d");
         canvas.width = Game.width;
         canvas.height = Game.height;
-       
     }
 };
 
