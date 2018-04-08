@@ -1,6 +1,7 @@
 var Game = {};
 var keys = {};
 var socket = io.connect();
+var id = socket.io.engine.id;
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
 Game.fps = 60;
@@ -51,6 +52,14 @@ Game.drawWorld = function() {
     ctx.fillStyle = "#a2a2ff";
     ctx.fillRect(0, canvas.height * 0.0, canvas.width, canvas.height*0.8);
 }
+
+socket.on("data",function(data){
+       console.log("data is ",data);
+    })
+
+    socket.on("player",function(data){
+        console.log(data);
+    })
 
 /* -------------------------------------------------------------------------- 
 Game.drawUI = function(){
@@ -251,7 +260,8 @@ Game.pause = function() {
 
 Game.update = function(tick) {
     Game.tick = tick; 
-    //Game.input();
+    
+    
 }
 
 /* -------------------------------------------------------------------------- */

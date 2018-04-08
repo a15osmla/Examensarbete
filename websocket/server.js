@@ -7,53 +7,99 @@ const path = require('path');
 var bodyParser = require('body-parser');
 var Game = {};
 var connections = [];
+var players = [];
+
+
+function Player(x, y, width, height, speed, id, p) {
+    this.player = p;
+    this.pid = id;
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.speed = speed;
+    this.grounded = false;
+    this.jumping = false;
+    this.blocking = false;
+    this.velY = 0;
+    this.velX = 0;
+    this.startY = y;
+    this.gravity = 2;
+    this.hp = 100;
+ 
+}
+
+/*   this.x = this.x+this.speed;
+        this.x = this.x-this.speed;
+*/
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/views/index.html');    
-    //res.render('index'); 
 });
 
+//-------------------------------------------------------On connection ----------------------------------------------------------------------
 
 io.sockets.on('connection', function(socket) {
     connections.push(socket);
     console.log('Connected: %s connected', connections.length);
+    console.log(players.length);
+    
+    // Add a new player object for every connection (Player) 
+    if(players.length % 2 == 0) {
+        players.push(new Player(100,100,100,100,5, socket.id, "p1"));  
+    } else {
+        players.push(new Player(900,900,100,100,5, socket.id), "p2");   
+    }
+
+    // Send player object to client
+    for(var x = 0; x < players.length; x++) {
+        var playerId = players[x].pid;
+        if(socket.id == playerId) {
+            io.sockets.connected[socket.id].emit('player', players[x]);
+        }   
+    }
+   
     
 
+//------------------------------------------------------------ Disconnect -----------------------------------------------------------------
+    
     //DC
     socket.on('disconnect', function() {
         connections.splice(connections.indexOf(socket), 1);
+        players.splice(players.indexOf(socket), 1);
+        console.log("P.length: " + players.length);
         console.log("A socket disconnected: %s sockets connected", connections.length);
     });
+    
+//-----------------------------------------------------------------------------------------------------------------------------
     
     // Send message 
     socket.on("send message", function(data){
         io.sockets.emit('new message', {msg: data});
         console.log(data);
     });
+
     
+    
+/*------------------------------------------------------------ Game -----------------------------------------------------------------
+    Game.update = function() {
+        console.log("update");
+        // Send positions to clients    
+    }
 
     Game.pause = function() {
        this.paused = (this.paused) ? false : true;
     };
 
-    Game.fps = 60;
-    Game.maxFrameSkip = 10;
-    Game.skipTicks = 1000 / Game.fps;
-
-    var loops = 0;
-    var nextGameTick = (new Date).getTime();
-    var startTime = (new Date).getTime();
-
-    loops = 0;
-    while (!Game.paused && (new Date).getTime() > nextGameTick && loops < Game.maxFrameSkip) {
-        Game.update(nextGameTick - startTime);
-        nextGameTick += Game.skipTicks;
-        loops++;
+    while (!Game.paused) {
+        Game.update();
     }
     
+    
+*/
 });
 
 server.listen(process.env.PORT || 1337);
