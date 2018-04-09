@@ -26,7 +26,6 @@ function Player(x, y, width, height, speed, id, p) {
     this.startY = y;
     this.gravity = 2;
     this.hp = 100;
- 
 }
 
 /*   this.x = this.x+this.speed;
@@ -69,7 +68,7 @@ io.sockets.on('connection', function(socket) {
         players.pop();
         console.log(players.length);
         console.log("A socket disconnected: %s sockets connected", connections.length);
-    });
+    }); 
     
 //-----------------------------------------------------------------------------------------------------------------------------
     

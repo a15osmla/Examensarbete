@@ -2,6 +2,10 @@ var Game = {};
 var keys = {};
 var socket = io.connect();
 var id = socket.io.engine.id;
+var player = {};
+var animation;
+var lastDir;
+
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
 Game.fps = 60;
@@ -37,11 +41,75 @@ document.addEventListener("keyup", function (e) {
 });
 
 /* -------------------------------------------------------------------------- */
+
+ /* Each sprite sheet tile is 16x16 pixels in dimension. */
+  var SPRITE_SIZE = 50;
+
+  /* The Animation class manages frames within an animation frame set. The frame
+  set is an array of values that correspond to the location of sprite images in
+  the sprite sheet. For example, a frame value of 0 would correspond to the first
+  sprite image / tile in the sprite sheet. By arranging these values in a frame set
+  array, you can create a sequence of frames that make an animation when played in
+  quick succession. */
+  var Animation = function(frame_set, delay) {
+    this.count = 0;// Counts the number of game cycles since the last frame change.
+      
+    this.delay = delay;// The number of game cycles to wait until the next frame change.
+    this.frame = 0;// The value in the sprite sheet of the sprite image / tile to display.
+    this.frame_index = 0;// The frame's index in the current animation frame set.
+    this.frame_set = frame_set;// The current animation frame set that holds sprite tile values.
+  };
+
+  Animation.prototype = {
+      
+
+    /* This changes the current animation frame set. For example, if the current
+    set is [0, 1], and the new set is [2, 3], it changes the set to [2, 3]. It also
+    sets the delay. */
+    change:function(frame_set, delay = 5) {
+
+      if (this.frame_set != frame_set) {// If the frame set is different:
+        this.count = 0;// Reset the count.
+        this.delay = delay;// Set the delay.
+        this.frame_index = 0;// Start at the first frame in the new frame set.
+        this.frame_set = frame_set;// Set the new frame set.
+        this.frame = this.frame_set[this.frame_index];// Set the new frame value.
+      }
+        
+
+    },
+
+    /* Call this on each game cycle. */
+    update:function() {
+
+      this.count ++;// Keep track of how many cycles have passed since the last frame change.
+            
+      if (this.count >= this.delay) {// If enough cycles have passed, we change the frame.
+
+        this.count = 0;// Reset the count.
+        /* If the frame index is on the last value in the frame set, reset to 0.
+        If the frame index is not on the last value, just add 1 to it. */
+        this.frame_index = (this.frame_index == this.frame_set.length - 1) ? 0 : this.frame_index + 1;
+        this.frame = this.frame_set[this.frame_index];// Change the current frame value.
+      }
+
+    },
+      
+    // Get the current frame_index
+    getFrame:function() {
+        return this.frame_index;
+    }
+}
+
+
+
+/* -------------------------------------------------------------------------- */
 Game.drawGFX = function() {
     Game.drawWorld();
-    //Game.drawPlayer(p1);
+    Game.drawPlayer();
     //sGame.drawUI();
     //Game.drawFPS();
+    
 };  
 
 /* -------------------------------------------------------------------------- */
@@ -53,13 +121,16 @@ Game.drawWorld = function() {
     ctx.fillRect(0, canvas.height * 0.0, canvas.width, canvas.height*0.8);
 }
 
-socket.on("data",function(data){
-       console.log("data is ",data);
-    })
+Game.drawPlayer = function() { 
+    if(player) {
+        if(player.player == "p1") {
+            ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
+            player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);
+        }
+    }
+}
 
-    socket.on("player",function(data){
-        console.log(data);
-    })
+    
 
 /* -------------------------------------------------------------------------- 
 Game.drawUI = function(){
@@ -123,135 +194,7 @@ Game.drawUI = function(){
 
     
 }
-/* -------------------------------------------------------------------------- */
-/*Game.input = function() { 
-    p2.animate.change(sprite_sheet.frame_sets2[0], 8);
-   
-    if (keys[87]) {
-            if(!p1.jumping) {
-                    p1.jumping = true;
-                    p1.velY = -p1.speed * 5;
-            }
-            if(lastDir == "left") {
-                p1.animate.change(sprite_sheet.frame_sets[9], 8);  
-            } else {
-                p1.animate.change(sprite_sheet.frame_sets[2], 8);  
-            } 
-    }
-    
-    // Move right - d   
-    if (keys[68]) {
-        p1.moving("right");
-        p1.animate.change(sprite_sheet.frame_sets[1], 15);
-        lastDir = "right";
-        
-        if (keys[87]) {
-            if(!p1.jumping) {
-                    p1.jumping = true;
-                    p1.velY = -p1.speed * 5;
-            }
-            if(lastDir == "left") {
-                p1.animate.change(sprite_sheet.frame_sets[9], 8);  
-            } else {
-                p1.animate.change(sprite_sheet.frame_sets[2], 8);  
-            } 
-        }
-    } 
-  
-    // Move left - a
-    else if (keys[65]) {
-        p1.moving("left");
-        p1.animate.change(sprite_sheet.frame_sets[6], 15);
-        lastDir = "left";
-        
-        if (keys[87]) {
-            if(!p1.jumping) {
-                    p1.jumping = true;
-                    p1.velY = -p1.speed * 5;
-            }
-            if(lastDir == "left") {
-                p1.animate.change(sprite_sheet.frame_sets[9], 8);  
-            } else {
-                p1.animate.change(sprite_sheet.frame_sets[2], 8);  
-            } 
-        }
-    } 
-    
-    // Punch - space
-    else if(keys[32]){
-        if(lastDir == "left") {
-            p1.animate.change(sprite_sheet.frame_sets[7], 15); 
-        } else {
-            p1.animate.change(sprite_sheet.frame_sets[4], 15);
-        }
-        
-        
-        var contact = colCheck(p2,p1);
-        var currentFrame = p1.animate.getFrame();
-  
-        if (contact == "r"  && p2.hp > 10 || contact == "l" && p2.hp > 10) {
-                if(contact == "r" || contact == "l") {
-                      if(currentFrame == 0) {
-                        p2.hp -= 5;
-                        console.log("hit R");   
-                      }
-                }
-        }   
-        
-    }
-    
-   // Block - shift
-   else if (keys[16]) {
-       if(lastDir == "left") {
-            p1.animate.change(sprite_sheet.frame_sets[8], 15); 
-        } else {
-            p1.animate.change(sprite_sheet.frame_sets[3], 15);
-        }
-   }
 
-    else{ 
-        if(lastDir == "left") {
-            p1.animate.change(sprite_sheet.frame_sets[5], 15);   
-        }else {
-            p1.animate.change(sprite_sheet.frame_sets[0], 15);
-            *
-        }    
-    }
-    
-    // If player is jumping change player y position and reduce velocity based on gravity
-    if(p1.jumping) {
-        p1.y += p1.velY;
-        p1.velY += p1.gravity; 
-    }
-    
-    // Check if player is on the ground
-    if(p1.y >= p1.startY){
-        p1.jumping = false;
-        p1.grounded = true;
-        p1.velY = 0;
-    }
-    
-    
-    //
-    if(p1.x >= canvas.width - 220){    
-        if(lastDir == "right") {
-            p1.speed = 0 ;
-        } else {
-            p1.speed = 5;
-        }
-    } 
-    if (p1.x <= -130) {
-       if(lastDir == "left") {
-            p1. speed = 0 ;
-        } else {
-            p1.speed = 5;
-        }
-    }
-    
-    p1.animate.update();
-    p2.animate.update();  
-    Game.drawGFX();
-}*/
 
 /* -------------------------------------------------------------------------- */
 Game.pause = function() {
@@ -260,8 +203,7 @@ Game.pause = function() {
 
 Game.update = function(tick) {
     Game.tick = tick; 
-    
-    
+    Game.input();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -281,16 +223,151 @@ Game.run = (function() {
 })();
 
 /* -------------------------------------------------------------------------- */
+Game.input = function() { 
+    
+    if (keys[87]) {
+        console.log("jump");
+            /*
+            if(!player.jumping) {
+                    player.jumping = true;
+                    player.velY = -p1.speed * 5;
+            }
+            
+            */
+            if(lastDir == "left") {
+                animation.change(sprite_sheet.frame_sets[9], 8);  
+            } else {
+                animation.change(sprite_sheet.frame_sets[2], 8);  
+            } 
+    }
+    
+    // Move right - d   
+    if (keys[68]) {
+        animation.change(sprite_sheet.frame_sets[1], 15);
+        lastDir = "right";
+        
+        if (keys[87]) {
+            /*
+            if(!player.jumping) {
+                    player.jumping = true;
+                    player.velY = -p1.speed * 5;
+            }*/
+            if(lastDir == "left") {
+                animation.change(sprite_sheet.frame_sets[9], 8);  
+            } else {
+                animation.change(sprite_sheet.frame_sets[2], 8);  
+            } 
+        }
+    } 
+  
+    // Move left - a
+    else if (keys[65]) {
+        animation.change(sprite_sheet.frame_sets[6], 15);
+        lastDir = "left";
+        
+        if (keys[87]) {
+            /*
+            if(!player.jumping) {
+                    player.jumping = true;
+                    player.velY = -p1.speed * 5;
+            }*/
+            if(lastDir == "left") {
+                animation.change(sprite_sheet.frame_sets[9], 8);  
+            } else {
+                animation.change(sprite_sheet.frame_sets[2], 8);  
+            } 
+        }
+    } 
+    
+    // Punch - space
+    else if(keys[32]){
+        if(lastDir == "left") {
+            animation.change(sprite_sheet.frame_sets[7], 15); 
+        } else {
+            animation.change(sprite_sheet.frame_sets[4], 15);
+        }
+        /*
+        
+        var contact = colCheck(p2,p1);
+        var currentFrame = p1.animate.getFrame();
+        
+        if (contact == "r"  && p2.hp > 10 || contact == "l" && p2.hp > 10) {
+                if(contact == "r" || contact == "l") {
+                      if(currentFrame == 0) {
+                        player.hp -= 5;
+                        console.log("hit R");   
+                      }
+                }
+        }   
+        */
+        
+    }
+    
+   // Block - shift
+   else if (keys[16]) {
+       if(lastDir == "left") {
+            animation.change(sprite_sheet.frame_sets[8], 15); 
+        } else {
+            animation.change(sprite_sheet.frame_sets[3], 15);
+        }
+   }
+
+    else{ 
+        if(lastDir == "left") {
+            animation.change(sprite_sheet.frame_sets[5], 15);   
+        }else {
+            animation.change(sprite_sheet.frame_sets[0], 15);
+        }    
+    }
+    
+         /*
+    // If player is jumping change player y position and reduce velocity based on gravity
+    if(player.jumping) {
+        p1.y += p1.velY;
+        p1.velY += p1.gravity; 
+    }
+    
+       
+    // Check if player is on the ground
+    if(player.y >= p1.startY){
+        p1.jumping = false;
+        p1.grounded = true;
+        p1.velY = 0;
+    }
+    
+    
+    /*
+    if(player.x >= canvas.width - 220){    
+        if(lastDir == "right") {
+            player.speed = 0 ;
+        } else {
+           player.speed = 5;
+        }
+    } 
+    if (player.x <= -130) {
+       if(lastDir == "left") {
+            player. speed = 0 ;
+        } else {
+            p1.speed = 5;
+        }
+    }*/
+    animation.update(); 
+    Game.drawGFX();
+}
+/* -------------------------------------------------------------------------- */
 Game.initialize = function() {
     sprite_sheet.image.src = "/img/spritesheet.png";
-    canvas = document.getElementById("gamecanvas");
-    
+    canvas = document.getElementById("gamecanvas");  
     
     if (canvas && canvas.getContext) {
+        animation = new Animation();
         ctx = canvas.getContext("2d");
         canvas.width = Game.width;
         canvas.height = Game.height;
-        Game.drawGFX();
+        
+        socket.on("player",function(data){
+            player = data;
+        });
     }
 };
 
