@@ -13,6 +13,7 @@ var players = [];
 function Player(x, y, width, height, speed, id, p) {
     this.player = p;
     this.pid = id;
+    this.index;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -47,19 +48,45 @@ io.sockets.on('connection', function(socket) {
     
     // Add a new player object for every connection (Player) 
     if(players.length % 2 == 0) {
-        players.push(new Player(100,100,100,100,5, socket.id, "p1")); 
+        players.push(new Player(100,380,100,100,5, socket.id, "p1")); 
     } else {
-        players.push(new Player(900,900,100,100,5, socket.id, "p2"));  
+        players.push(new Player(1200,380,100,100,5, socket.id, "p2"));  
     }
 
 
     // Send player object to client
     for(var x = 0; x < players.length; x++) {
         var playerId = players[x].pid;
+        players[x].index = x;
         if(socket.id == playerId) {
-            io.sockets.connected[socket.id].emit('player', players[x]);
+            io.sockets.connected[socket.id].emit('player',{players: players[x],index: x});
         }   
     }
+    
+    io.sockets.emit('players', {players: players});
+    
+    socket.on('movement', function(data) {
+        // Recieved action from client and the index of their respective player object
+        var action = data.action;
+        var index = data.index;
+        
+        if(action == "left") {
+            players[index].x -= players[index].speed;
+            io.sockets.emit('players', {players: players});
+            
+            /*
+            io.sockets.connected[socket.id].emit('player', {players: players[index], index: index});*/
+        } else if (data.action == "right") {
+            players[index].x += players[index].speed;
+            io.sockets.emit('players', {players: players});
+          
+            
+            /*
+            io.sockets.connected[socket.id].emit('player', {players: players[index], index: index});
+            */
+        }
+    });
+    
 //------------------------------------------------------------ Disconnect -----------------------------------------------------------------
     
     //DC

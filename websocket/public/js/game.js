@@ -5,6 +5,11 @@ var id = socket.io.engine.id;
 var player = {};
 var animation;
 var lastDir;
+var set;
+var index;
+var players = [];
+var action;
+
 
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
@@ -22,13 +27,23 @@ var sprite_sheet = {
                 [20,19,18,17,16,15], // set 6: walk left
                 [25,26], // set 7: punch left
                 [24], // set 8: block left
-                [23,22,21] // set 9: block left
+                [23,22,21] // set 9: jump left
                 ],
     // P2
-    frame_sets2:[[28] //  
-    ],
+    frame_sets2:[[28],// set 0: Stand right
+                [29,30,31,32,33,34],// set 1: Walk right
+                [35,36,37], // set 2: jump right
+                [38], // set 3: block right
+                [40,41], // set 4: punch right
+                [42], // set 5: stand left
+                [48,47,46,45,44,43], // set 6: walk left
+                [55,54], // set 7: punch left
+                [52], // set 8: block left
+                [49,51,50] // set 9: jump left
+                ],
     image:new Image()
   };
+
 
 
 /* -------------------------------------------------------------------------- */
@@ -122,12 +137,23 @@ Game.drawWorld = function() {
 }
 
 Game.drawPlayer = function() { 
+    for(var x = 0; x < players.length; x++) {
+        var player = players[x];
+        ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
+        player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);
+    }
+    /*
     if(player) {
         if(player.player == "p1") {
             ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
             player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);
+        } else if(player.player == "p2"){
+            ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
+            player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);   
         }
     }
+    */
+    
 }
 
     
@@ -224,9 +250,25 @@ Game.run = (function() {
 
 /* -------------------------------------------------------------------------- */
 Game.input = function() { 
+    for(var x = 0; x < players.length; x++) {
+        
+    }
     
-    if (keys[87]) {
-        console.log("jump");
+    if(player.player == "p1") {
+        set = sprite_sheet.frame_sets;
+        if(!lastDir) {
+               lastDir = "right"; 
+            }
+
+    } else if (player.player == "p2") {
+        if(!lastDir) {
+           lastDir = "left"; 
+        }
+        set = sprite_sheet.frame_sets2;
+    }
+    
+    if(set) {
+         if (keys[87] || action == "jump") {
             /*
             if(!player.jumping) {
                     player.jumping = true;
@@ -235,17 +277,17 @@ Game.input = function() {
             
             */
             if(lastDir == "left") {
-                animation.change(sprite_sheet.frame_sets[9], 8);  
+                animation.change(set[9], 8);  
             } else {
-                animation.change(sprite_sheet.frame_sets[2], 8);  
+                animation.change(set[2], 8);  
             } 
     }
     
     // Move right - d   
-    if (keys[68]) {
-        animation.change(sprite_sheet.frame_sets[1], 15);
+    else if(keys[68] || action == "right") {
+        animation.change(set[1], 15);
         lastDir = "right";
-        
+        socket.emit("movement", {action: "right", index: index} );
         if (keys[87]) {
             /*
             if(!player.jumping) {
@@ -253,38 +295,42 @@ Game.input = function() {
                     player.velY = -p1.speed * 5;
             }*/
             if(lastDir == "left") {
-                animation.change(sprite_sheet.frame_sets[9], 8);  
+                animation.change(set[9], 8);  
             } else {
-                animation.change(sprite_sheet.frame_sets[2], 8);  
+                animation.change(set[2], 8);  
             } 
         }
     } 
   
     // Move left - a
-    else if (keys[65]) {
-        animation.change(sprite_sheet.frame_sets[6], 15);
+    else if (keys[65] || action == "left") {
+        animation.change(set[6], 15);
         lastDir = "left";
         
-        if (keys[87]) {
+        socket.emit("movement", {action: "left", index: index} );
+        
+        
+        
+        if (keys[87] || action == "jump") {
             /*
             if(!player.jumping) {
                     player.jumping = true;
                     player.velY = -p1.speed * 5;
             }*/
             if(lastDir == "left") {
-                animation.change(sprite_sheet.frame_sets[9], 8);  
+                animation.change(set[9], 8);  
             } else {
-                animation.change(sprite_sheet.frame_sets[2], 8);  
+                animation.change(set[2], 8);  
             } 
         }
     } 
     
     // Punch - space
-    else if(keys[32]){
+    else if(keys[32] || action == "punch"){
         if(lastDir == "left") {
-            animation.change(sprite_sheet.frame_sets[7], 15); 
+            animation.change(set[7], 15); 
         } else {
-            animation.change(sprite_sheet.frame_sets[4], 15);
+            animation.change(set[4], 15);
         }
         /*
         
@@ -304,19 +350,19 @@ Game.input = function() {
     }
     
    // Block - shift
-   else if (keys[16]) {
+   else if (keys[16] || action == "block") {
        if(lastDir == "left") {
-            animation.change(sprite_sheet.frame_sets[8], 15); 
+            animation.change(set[8], 15); 
         } else {
-            animation.change(sprite_sheet.frame_sets[3], 15);
+            animation.change(set[3], 15);
         }
    }
 
     else{ 
         if(lastDir == "left") {
-            animation.change(sprite_sheet.frame_sets[5], 15);   
-        }else {
-            animation.change(sprite_sheet.frame_sets[0], 15);
+            animation.change(set[5], 15);   
+        } else {
+            animation.change(set[0], 15);
         }    
     }
     
@@ -351,6 +397,8 @@ Game.input = function() {
             p1.speed = 5;
         }
     }*/
+    }
+   
     animation.update(); 
     Game.drawGFX();
 }
@@ -366,7 +414,12 @@ Game.initialize = function() {
         canvas.height = Game.height;
         
         socket.on("player",function(data){
-            player = data;
+            player = data.players;
+            index = data.index;
+        });
+        
+        socket.on("players", function(data) {
+            players = data.players;
         });
     }
 };
