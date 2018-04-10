@@ -1,7 +1,6 @@
 var Game = {};
 var keys = {};
 var socket = io.connect();
-var id = socket.io.engine.id;
 var player = {};
 var animation;
 var lastDir;
@@ -10,12 +9,12 @@ var index;
 var players = [];
 var action;
 
-
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
 Game.fps = 60;
 Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
+
 var sprite_sheet = {
     // P1
     frame_sets:[[0],// set 0: Stand right
@@ -90,8 +89,6 @@ document.addEventListener("keyup", function (e) {
         this.frame_set = frame_set;// Set the new frame set.
         this.frame = this.frame_set[this.frame_index];// Set the new frame value.
       }
-        
-
     },
 
     /* Call this on each game cycle. */
@@ -115,16 +112,12 @@ document.addEventListener("keyup", function (e) {
         return this.frame_index;
     }
 }
-
-
-
 /* -------------------------------------------------------------------------- */
 Game.drawGFX = function() {
     Game.drawWorld();
     Game.drawPlayer();
     //sGame.drawUI();
-    //Game.drawFPS();
-    
+    //Game.drawFPS(); 
 };  
 
 /* -------------------------------------------------------------------------- */
@@ -152,8 +145,7 @@ Game.drawPlayer = function() {
             player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);   
         }
     }
-    */
-    
+    */  
 }
 
     
@@ -215,12 +207,8 @@ Game.drawUI = function(){
     
     ctx.font = (0.05 * canvas.height + "px Arial");
     ctx.fillStyle = "black";
-    ctx.fillText("P2", p2.x+154, p2.y);
-    
-
-    
+    ctx.fillText("P2", p2.x+154, p2.y); 
 }
-
 
 /* -------------------------------------------------------------------------- */
 Game.pause = function() {
@@ -230,6 +218,17 @@ Game.pause = function() {
 Game.update = function(tick) {
     Game.tick = tick; 
     Game.input();
+}
+
+var jumping;
+function jump() {
+  if (!jumping) {
+      console.log("jump");
+    jumping = true;
+      
+    socket.emit("movement", {action: "jump", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()});
+    setTimeout(function(){ jumping = false;}, 500);
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -250,9 +249,6 @@ Game.run = (function() {
 
 /* -------------------------------------------------------------------------- */
 Game.input = function() { 
-    for(var x = 0; x < players.length; x++) {
-        
-    }
     
     if(player.player == "p1") {
         set = sprite_sheet.frame_sets;
@@ -268,135 +264,73 @@ Game.input = function() {
     }
     
     if(set) {
-         if (keys[87] || action == "jump") {
-            /*
-            if(!player.jumping) {
-                    player.jumping = true;
-                    player.velY = -p1.speed * 5;
-            }
-            
-            */
-            if(lastDir == "left") {
-                animation.change(set[9], 8);  
-            } else {
-                animation.change(set[2], 8);  
-            } 
-    }
-    
-    // Move right - d   
-    else if(keys[68] || action == "right") {
-        animation.change(set[1], 15);
-        lastDir = "right";
-        socket.emit("movement", {action: "right", index: index} );
-        if (keys[87]) {
-            /*
-            if(!player.jumping) {
-                    player.jumping = true;
-                    player.velY = -p1.speed * 5;
-            }*/
-            if(lastDir == "left") {
-                animation.change(set[9], 8);  
-            } else {
-                animation.change(set[2], 8);  
-            } 
-        }
-    } 
-  
-    // Move left - a
-    else if (keys[65] || action == "left") {
-        animation.change(set[6], 15);
-        lastDir = "left";
-        
-        socket.emit("movement", {action: "left", index: index} );
-        
-        
-        
-        if (keys[87] || action == "jump") {
-            /*
-            if(!player.jumping) {
-                    player.jumping = true;
-                    player.velY = -p1.speed * 5;
-            }*/
-            if(lastDir == "left") {
-                animation.change(set[9], 8);  
-            } else {
-                animation.change(set[2], 8);  
-            } 
-        }
-    } 
-    
-    // Punch - space
-    else if(keys[32] || action == "punch"){
-        if(lastDir == "left") {
-            animation.change(set[7], 15); 
-        } else {
-            animation.change(set[4], 15);
-        }
-        /*
-        
-        var contact = colCheck(p2,p1);
-        var currentFrame = p1.animate.getFrame();
-        
-        if (contact == "r"  && p2.hp > 10 || contact == "l" && p2.hp > 10) {
-                if(contact == "r" || contact == "l") {
-                      if(currentFrame == 0) {
-                        player.hp -= 5;
-                        console.log("hit R");   
-                      }
-                }
-        }   
-        */
-        
-    }
-    
-   // Block - shift
-   else if (keys[16] || action == "block") {
-       if(lastDir == "left") {
-            animation.change(set[8], 15); 
-        } else {
-            animation.change(set[3], 15);
-        }
-   }
+        // Move right - d   
+        if(keys[68] || action == "right") {
+            animation.change(set[1], 15);
+            lastDir = "right";
+            socket.emit("movement", {action: "right", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime() });
 
-    else{ 
-        if(lastDir == "left") {
-            animation.change(set[5], 15);   
-        } else {
-            animation.change(set[0], 15);
-        }    
-    }
-    
-         /*
-    // If player is jumping change player y position and reduce velocity based on gravity
-    if(player.jumping) {
-        p1.y += p1.velY;
-        p1.velY += p1.gravity; 
-    }
-    
-       
-    // Check if player is on the ground
-    if(player.y >= p1.startY){
-        p1.jumping = false;
-        p1.grounded = true;
-        p1.velY = 0;
-    }
-    
-    
-    /*
-    if(player.x >= canvas.width - 220){    
-        if(lastDir == "right") {
-            player.speed = 0 ;
-        } else {
-           player.speed = 5;
+            if (keys[87] || action == "jump") {
+                jump();
+                if(lastDir == "left") {
+                    animation.change(set[9], 8);  
+                } else {
+                    animation.change(set[2], 8);  
+                } 
+            }
+        } 
+
+        // Move left - a
+        else if (keys[65] || action == "left") {
+            animation.change(set[6], 15);
+            lastDir = "left";
+            socket.emit("movement", {action: "left", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()});
+            
+            if (keys[87] || action == "jump") {
+             jump();
+                if(lastDir == "left") {
+                   
+                    animation.change(set[9], 8);  
+                } else {
+                    animation.change(set[2], 8);  
+                } 
+            } 
+        } 
+        
+        else if (keys[87] || action == "jump") {
+            jump();
+            if(lastDir == "left") {
+                animation.change(set[9], 8); 
+            } else {
+                animation.change(set[2], 8);  
+            } 
         }
-    } 
-    if (player.x <= -130) {
-       if(lastDir == "left") {
-            player. speed = 0 ;
-        } else {
-            p1.speed = 5;
+
+        // Punch - space
+        else if(keys[32] || action == "punch"){
+            if(lastDir == "left") {
+                animation.change(set[7], 15); 
+            } else {
+                animation.change(set[4], 15);
+            }
         }
-    }*/
+
+        // Block - shift
+        else if (keys[16] || action == "block") {
+           if(lastDir == "left") {
+                animation.change(set[8], 15); 
+            } else {
+                animation.change(set[3], 15);
+            }
+        }
+
+        else{ 
+            if(lastDir == "left") {
+                animation.change(set[5], 15);   
+            } else {
+                animation.change(set[0], 15);
+            }    
+        }
     }
    
     animation.update(); 
@@ -413,17 +347,26 @@ Game.initialize = function() {
         canvas.width = Game.width;
         canvas.height = Game.height;
         
-        socket.on("player",function(data){
-            player = data.players;
-            index = data.index;
-        });
-        
         socket.on("players", function(data) {
             players = data.players;
+            var startTime = data.time;
+            var ms = new Date().getTime() - startTime;
+            console.log(ms + " ms");
+            
+            console.log(players);
+            for(var x = 0; x < players.length; x++) {
+                var sid = socket.io.engine.id;
+                console.log(player)
+                if(players[x].pid == sid ) {
+                    player = players[x];
+                    index = player.index;
+                    
+                }
+            }
         });
+    
     }
 };
-
 
 /* -------------------------------------------------------------------------- */
 (function() {

@@ -9,17 +9,16 @@ var Game = {};
 var connections = [];
 var players = [];
 
-
-function Player(x, y, width, height, speed, id, p) {
+function Player(x, y, width, height, speed, id, p, index) {
     this.player = p;
     this.pid = id;
-    this.index;
+    this.index = index;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.speed = speed;
-    this.grounded = false;
+    this.grounded = true;
     this.jumping = false;
     this.blocking = false;
     this.velY = 0;
@@ -28,10 +27,6 @@ function Player(x, y, width, height, speed, id, p) {
     this.gravity = 2;
     this.hp = 100;
 }
-
-/*   this.x = this.x+this.speed;
-        this.x = this.x-this.speed;
-*/
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -48,44 +43,56 @@ io.sockets.on('connection', function(socket) {
     
     // Add a new player object for every connection (Player) 
     if(players.length % 2 == 0) {
-        players.push(new Player(100,380,100,100,5, socket.id, "p1")); 
+        players.push(new Player(100,380,100,100,5, socket.id, "p1", players.length)); 
     } else {
-        players.push(new Player(1200,380,100,100,5, socket.id, "p2"));  
+        players.push(new Player(1200,380,100,100,5, socket.id, "p2", players.length));  
     }
 
+    io.sockets.emit('players', { players: players });
 
-    // Send player object to client
-    for(var x = 0; x < players.length; x++) {
-        var playerId = players[x].pid;
-        players[x].index = x;
-        if(socket.id == playerId) {
-            io.sockets.connected[socket.id].emit('player',{players: players[x],index: x});
-        }   
-    }
-    
-    io.sockets.emit('players', {players: players});
-    
-    socket.on('movement', function(data) {
-        // Recieved action from client and the index of their respective player object
-        var action = data.action;
-        var index = data.index;
-        
-        if(action == "left") {
-            players[index].x -= players[index].speed;
-            io.sockets.emit('players', {players: players});
-            
-            /*
-            io.sockets.connected[socket.id].emit('player', {players: players[index], index: index});*/
-        } else if (data.action == "right") {
-            players[index].x += players[index].speed;
-            io.sockets.emit('players', {players: players});
-          
-            
-            /*
-            io.sockets.connected[socket.id].emit('player', {players: players[index], index: index});
-            */
-        }
-    });
+        // Receive player input from client
+        socket.on('movement', function(data) {
+            // Recieved action from client and the index of their respective player object
+            var action = data.action;
+            var index = data.index;
+            var player = players[index];
+            var canvas = {};
+            canvas.width = data.canvas;
+            var lastDir = data.dir;
+            var clientTime = data.time;
+            var testData = data.data;
+
+            if (action == "left") {
+                player.x -= player.speed;
+                io.sockets.emit('players', { players: players,time:clientTime});
+            } else if (data.action == "right") {
+                player.x += player.speed;
+                io.sockets.emit('players', { players: players, time:clientTime});
+            } else if (data.action == "jump") {
+                var interval = setInterval(function(){
+                    if (!player.jumping) {
+                        player.jumping = true;
+                        player.grounded = false;
+                        player.velY = -player.speed * 5;
+                        io.sockets.emit('players', { players: players});
+                    } 
+                    if(player.jumping) {
+                        player.y += player.velY;;  
+                        player.velY -= -player.gravity;
+                        io.sockets.emit('players', { players: players});        
+                    } 
+                    // Check if player is on the ground
+                    if(player.y >= player.startY){
+                        player.jumping = false;
+                        player.grounded = true;
+                        player.velY = 0;
+                        clearInterval(interval);
+                        io.sockets.emit('players', { players: players});
+                    }
+                }, 15);
+            }
+                                                    
+        });
     
 //------------------------------------------------------------ Disconnect -----------------------------------------------------------------
     
@@ -93,54 +100,9 @@ io.sockets.on('connection', function(socket) {
     socket.on('disconnect', function() {
         connections.splice(connections.indexOf(socket), 1);
         players.pop();
-        console.log(players.length);
         console.log("A socket disconnected: %s sockets connected", connections.length);
     }); 
-    
-//-----------------------------------------------------------------------------------------------------------------------------
-    
-    // Send message 
-    socket.on("send message", function(data){
-        io.sockets.emit('new message', {msg: data});
-        console.log(data);
-    });
 
-    
-    
-/*------------------------------------------------------------ Game -----------------------------------------------------------------
-    Game.update = function() {
-        console.log("update");
-        // Send positions to clients    
-    }
-
-    Game.pause = function() {
-       this.paused = (this.paused) ? false : true;
-    };
-
-    while (!Game.paused) {
-        Game.update();
-    }
-    
-    
-*/
 });
 
 server.listen(process.env.PORT || 1337);
-
-/*
-
-client task
-    check for user input
-    send commands to the server
-    receive updates about the game from the server
-    draw graphics
-    play sounds
-
-Server tasks
-    check for client commands
-    run AI
-    move all entities
-    resolve collisions
-    send updates about the game to the clients
-
-*/
