@@ -1,0 +1,18 @@
+{
+  "name": "gamertc",
+  "version": "1.0.0",
+  "description": "Simple fighting game using webrtc",
+  "main": "datachannel.js",
+    "dependencies": {
+    "body-parser": "*",
+    "ejs": "*",
+    "express": "*",
+    "socket.io": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Osmaro Landaverde",
+  "license": "ISC"
+}
