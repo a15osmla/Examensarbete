@@ -2,7 +2,7 @@
   "name": "gamertc",
   "version": "1.0.0",
   "description": "Simple fighting game using webrtc",
-  "main": "datachannel.js",
+  "main": "server.js",
     "dependencies": {
     "body-parser": "*",
     "ejs": "*",

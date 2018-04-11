@@ -359,8 +359,7 @@ Game.initialize = function() {
                 console.log(player)
                 if(players[x].pid == sid ) {
                     player = players[x];
-                    index = player.index;
-                    
+                    index = player.index;  
                 }
             }
         });
