@@ -6,8 +6,8 @@ var config = {
 	}]
 };
 
-var socket id = socket.id;
-console.log(id);
+
+
 
 // båda klienterna tar emot sdp
 // klient 1 skickar sdp till klient 2
@@ -20,32 +20,73 @@ var dataChannelOptions = {
 };
 var dataChannel;
 
- socket.on("start connection", function(data) {
-        peerConn = new RTCPeerConnection(config, null);
-        dataChannel = peerConn.createDataChannel('textMessages', dataChannelOptions);
-          
-        // send any ice candidates to the other peer
-        peerConn.onicecandidate = function (evt) {
-            socket.emit("send candidate", JSON.stringify({ "candidate": evt.candidate }));
-        };
+socket.on('connect', function() {
+  console.log(socket.id);
+});
 
-        io.sockets.on("connection", function(socket){
-    connections.push(socket);
-    console.log(connections.length + " sockets connected");
+socket.on("start connection", function(data) {
     
-    if(connections.length >= 2) {
-        io.sockets.emit("start connection", "Connection started");
-    }
+    socket.on('signaling_message', function(data) {
+	displaySignalMessage("Signal received: " + data.type);
+	//Setup the RTC Peer Connection object
+	if (!rtcPeerConn)
+		startSignaling();
+	
+	if (data.type != "user_here") {
+		var message = JSON.parse(data.message);
+		if (message.sdp) {
+			rtcPeerConn.setRemoteDescription(new RTCSessionDescription(message.sdp), function () {
+				// if we received an offer, we need to answer
+				if (rtcPeerConn.remoteDescription.type == 'offer') {
+					rtcPeerConn.createAnswer(sendLocalDesc, logError);
+				}
+			}, logError);
+		}
+		else {
+			rtcPeerConn.addIceCandidate(new RTCIceCandidate(message.candidate));
+		}
+	}
+	
+        
+        
+
+    peerConn = new RTCPeerConnection(config, null);
+    dataChannel = peerConn.createDataChannel('textMessages', dataChannelOptions);
+          
+    // send any ice candidates to the other peer
+    peerConn.onicecandidate = function (evt) {
+        if(evt.candidate) {
+            socket.emit("send candidate", JSON.stringify({ "candidate": evt.candidate }));
+            displaySignalMessage("Successfully sent candidate");
+        }
+            
+    rtcPeerConn.onnegotiationneeded = function () {
+		  displaySignalMessage("on negotiation called");
+		   rtcPeerConn.createOffer(sendLocalDesc, logError);
+    }  
+           
+    };
+        
+});
+
+
     
-    //DC
-    socket.on('disconnect', function() {
-        connections.splice(connections.indexOf(socket), 1);
-        console.log("A socket disconnected: %s sockets connected", connections.length);
-    });
     
-    socket.on('send candidate', function() {
-        io.sockets.emit('players', "hej");
-    });
-              
-})
- });
+    
+
+function sendLocalDesc(desc) {
+    rtcPeerConn.setLocalDescription(desc, function () {
+		displaySignalMessage("sending local description");
+		io.emit('signal',{"type":"SDP", "message": JSON.stringify({ 'sdp': rtcPeerConn.localDescription })});
+	}, logError);
+    
+}
+
+//Logging/Display Methods
+function logError(error) {
+	displaySignalMessage(error.name + ': ' + error.message);
+}
+
+function displaySignalMessage(message) {
+	document.getElementById("game").innerHTML = document.getElementById("game").innerHTML + "<br/>" + message;
+}

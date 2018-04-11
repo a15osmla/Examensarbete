@@ -18,7 +18,7 @@ io.sockets.on("connection", function(socket){
     connections.push(socket);
     console.log(connections.length + " sockets connected");
     
-    if(connections.length >= 2) {
+    if(connections.length >= 1) {
         io.sockets.emit("start connection", "Connection started");
     }
     
@@ -28,10 +28,9 @@ io.sockets.on("connection", function(socket){
         console.log("A socket disconnected: %s sockets connected", connections.length);
     });
     
-    socket.on('send candidate', function() {
-        io.sockets.emit('players', "hej");
-    });
-              
+    socket.on('send candidate', function(data) {
+        io.sockets.emit(data);
+    });          
 })
 
 
