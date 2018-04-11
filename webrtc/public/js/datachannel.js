@@ -29,5 +29,23 @@ var dataChannel;
             socket.emit("send candidate", JSON.stringify({ "candidate": evt.candidate }));
         };
 
-        
+        io.sockets.on("connection", function(socket){
+    connections.push(socket);
+    console.log(connections.length + " sockets connected");
+    
+    if(connections.length >= 2) {
+        io.sockets.emit("start connection", "Connection started");
+    }
+    
+    //DC
+    socket.on('disconnect', function() {
+        connections.splice(connections.indexOf(socket), 1);
+        console.log("A socket disconnected: %s sockets connected", connections.length);
+    });
+    
+    socket.on('send candidate', function() {
+        io.sockets.emit('players', "hej");
+    });
+              
+})
  });
