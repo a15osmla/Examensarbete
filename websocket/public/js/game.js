@@ -231,21 +231,7 @@ function jump() {
   }
 }
 
-/* -------------------------------------------------------------------------- */
-Game.run = (function() {
-    var loops = 0;
-    var nextGameTick = (new Date).getTime();
-    var startTime = (new Date).getTime();
-    
-    return function() {
-        loops = 0;
-        while (!Game.paused && (new Date).getTime() > nextGameTick && loops < Game.maxFrameSkip) {
-            Game.update(nextGameTick - startTime);
-            nextGameTick += Game.skipTicks;
-            loops++;
-        }
-    };
-})();
+
 
 /* -------------------------------------------------------------------------- */
 Game.input = function() { 
@@ -264,8 +250,27 @@ Game.input = function() {
     }
     
     if(set) {
+        
+        // Block - shift
+        if (keys[16] || action == "block") {
+           if(lastDir == "left") {
+                animation.change(set[8], 15); 
+            } else {
+                animation.change(set[3], 15);
+            }
+        }
+        
+        // Punch - space
+        else if(keys[32] || action == "punch"){
+            if(lastDir == "left") {
+                animation.change(set[7], 15); 
+            } else {
+                animation.change(set[4], 15);
+            }
+        }
+        
         // Move right - d   
-        if(keys[68] || action == "right") {
+        else if(keys[68] || action == "right") {
             animation.change(set[1], 15);
             lastDir = "right";
             socket.emit("movement", {action: "right", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime() });
@@ -306,23 +311,9 @@ Game.input = function() {
             } 
         }
 
-        // Punch - space
-        else if(keys[32] || action == "punch"){
-            if(lastDir == "left") {
-                animation.change(set[7], 15); 
-            } else {
-                animation.change(set[4], 15);
-            }
-        }
+    
 
-        // Block - shift
-        else if (keys[16] || action == "block") {
-           if(lastDir == "left") {
-                animation.change(set[8], 15); 
-            } else {
-                animation.change(set[3], 15);
-            }
-        }
+        
 
         else{ 
             if(lastDir == "left") {
@@ -367,6 +358,21 @@ Game.initialize = function() {
     }
 };
 
+/* -------------------------------------------------------------------------- */
+Game.run = (function() {
+    var loops = 0;
+    var nextGameTick = (new Date).getTime();
+    var startTime = (new Date).getTime();
+    
+    return function() {
+        loops = 0;
+        while (!Game.paused && (new Date).getTime() > nextGameTick && loops < Game.maxFrameSkip) {
+            Game.update(nextGameTick - startTime);
+            nextGameTick += Game.skipTicks;
+            loops++;
+        }
+    };
+})();
 /* -------------------------------------------------------------------------- */
 (function() {
     var onEachFrame;

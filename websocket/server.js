@@ -48,7 +48,7 @@ io.sockets.on('connection', function(socket) {
         players.push(new Player(1200,380,100,100,5, socket.id, "p2", players.length));  
     }
 
-    io.sockets.emit('players', { players: players });
+    io.sockets.emit('players', {players: players });
 
         // Receive player input from client
         socket.on('movement', function(data) {
