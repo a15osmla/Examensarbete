@@ -5,6 +5,7 @@ var server = require('http').createServer(app);
 var io = require("socket.io").listen(server);
 var bodyParser = require('body-parser');
 var connections = [];
+var users = [];
 var sessionId;
 
 
@@ -22,14 +23,15 @@ function sendTo(sessionId, message) {
 io.sockets.on("connection", function(socket){
     console.log(socket.id + " connected");
     connections.push(socket);
+    users.push(socket.id);
+    console.log(connections.length + " sockets connected");
+    
+    
     if(connections.length == 2) {
-        socket.emit("connectedfirst", connections[1].id);
+        io.sockets.emit("connectedfirst", connections[1].id);
     }
     
-    console.log(connections.length + " sockets connected");
-  
-    
-    
+    io.sockets.emit("users", {users:users});
     
      // Recieve signal and send to all other clients
     socket.on("message", function(message) {
@@ -42,18 +44,11 @@ io.sockets.on("connection", function(socket){
             data = {}; 
         }
         
+   
         var type = data.type;
         sessionId = data.session;
+        conn = data.session;
         
-        for(var x = 0; x < connections.length; x++ ) {
-            if(connections[x].id != sessionId) {
-                conn = connections[x].id;
-            } else {
-                otherId = sessionId;  
-            }
-         }
-        
-
         if(connections.length >= 2) {
             switch(data.type) { 
    			
@@ -75,7 +70,7 @@ io.sockets.on("connection", function(socket){
             }   
             break;  
          case "candidate": 
-            console.log("Sending candidate to:", conn); 
+            console.log("Sending candidate to:", conn), data.candidate; 
             if(conn != null) { 
                sendTo(conn, {type: "candidate", candidate: data.candidate, session:sessionId});
             }
@@ -103,6 +98,7 @@ io.sockets.on("connection", function(socket){
     // Disconnect
     socket.on('disconnect', function() {
         connections.splice(connections.indexOf(socket), 1);
+        users.pop();
         console.log("A socket disconnected: %s sockets connected", connections.length);
     });
 

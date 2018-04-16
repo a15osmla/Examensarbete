@@ -344,10 +344,8 @@ Game.initialize = function() {
             var ms = new Date().getTime() - startTime;
             console.log(ms + " ms");
             
-            console.log(players);
             for(var x = 0; x < players.length; x++) {
                 var sid = socket.io.engine.id;
-                console.log(player)
                 if(players[x].pid == sid ) {
                     player = players[x];
                     index = player.index;  

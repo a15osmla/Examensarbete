@@ -12,6 +12,7 @@ Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
 Game.oldTick;
 
+
 var sprite_sheet = {
     // P1
     frame_sets:[[0],// set 0: Stand right
@@ -139,8 +140,10 @@ Game.input = function() {
             if(!p1.jumping) {
                     p1.jumping = true;
                     p1.velY = -p1.speed * 5;
+                    
             }
             if(lastDir == "left") {
+                //dataChannel.send(new DATE.getTime());
                 p1.animate.change(sprite_sheet.frame_sets[9], 8);  
             } else {
                 p1.animate.change(sprite_sheet.frame_sets[2], 8);  
@@ -436,39 +439,7 @@ function colCheck(shapeA, shapeB) {
 }
 
 /* -------------------------------------------------------------------------- */
-function colCheck(shapeA, shapeB) {
-    // get the vectors to check against
-    var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
-        vY = (shapeA.y + (shapeA.height / 2)) - (shapeB.y + (shapeB.height / 2)),
-        // add the half widths and half heights of the objects
-        hWidths = (shapeA.width / 2) + (shapeB.width / 2),
-        hHeights = (shapeA.height / 2) + (shapeB.height / 2),
-        colDir = null;
-
-    if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
-
-        var oX = hWidths - Math.abs(vX),
-            oY = hHeights - Math.abs(vY);
-        if (oX >= oY) {
-            if (vY > 0) {
-                colDir = "t";
-                shapeA.y += oY;
-            } else {
-                colDir = "b";
-                shapeA.y -= oY;
-            }
-        } else {
-            if (vX > 0) {
-                colDir = "l";
-                shapeA.x += oX;
-            } else {
-                colDir = "r";
-                shapeA.x -= oX;
-            }
-        }
-    }
-    return colDir;
-}(function() {
+(function() {
     var onEachFrame;
     if (window.requestAnimationFrame) {
        onEachFrame = function(cb) {

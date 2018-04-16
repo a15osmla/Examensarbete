@@ -1,16 +1,8 @@
 var socket = io.connect();
 var peerConn;
 var config = {
-	'iceServers': [{
-		'url': 'stun:stun.l.google.com:19302',
-        'url' :'stun:stun.2.google.com:19302',
-        'url' :'stun:stun.3.google.com:19302',
-        'url' :'stun:stun.4.google.com:19302',
-        'url' :'stun:stun.4.google.com:19302',
-        'url' :'stun:stun.4.google.com:19302',
-        'url' :'stun:stun01.sipphone.com',
-        
-	}]
+	'iceServers': [{'url': 'stun:stun.1und1.de'}
+                  ]
 };
 
 var dataChannelOptions = {
@@ -19,38 +11,48 @@ var dataChannelOptions = {
 };
 var dataChannel;
 var sessionId;
+var otherId;
 
 socket.on('connect', function(data) {
     console.log("This clients id: " + socket.id);
     sessionId = socket.id;
     
-    peerConn = new webkitRTCPeerConnection(config, { 
-         optional: [{RtpDataChannels: true}] 
-    });
     
-     peerConn.onicecandidate = function (event) { 
-		
-         if (event.candidate) { 
+    socket.on('users', function(data) {
+        var array = data.users;
+        for(var x = 0; x < array.length; x++) {
+            if(sessionId != array[x]) {
+               otherId = array[x];
+            }
+        }
+    });
+ 
+    
+    peerConn = new RTCPeerConnection(config, null);
+    dataChannel = peerConn.createDataChannel('textMessages', dataChannelOptions);  
+    
+    dataChannel.onopen = dataChannelStateChanged;
+    peerConn.ondatachannel = receiveDataChannel;
+    
+    displaySignalMessage("RTCPeerConnection object was created");
+      
+    
+    socket.on('connectedfirst', function(data){ 
+        peerConn.onicecandidate = function (event) { 
+        if (event.candidate) { 
             send({ 
                type: "candidate", 
                candidate: event.candidate, 
-                session:sessionId
+               session:otherId
             });
          } 
-      }; 
-    
-    console.log("RTCPeerConnection object was created"); 
-    console.log(peerConn);
-    displaySignalMessage("RTCPeerConnection object was created");
-    
-    socket.on('connectedfirst', function(data){
-        
-      
+        }; 
+       
         
         if(data == sessionId) {
           peerConn.createOffer(function (offer) { 
             displaySignalMessage("create offer");
-             send({ type: "offer", offer: offer, session: sessionId}); 
+             send({ type: "offer", offer: offer, session: otherId}); 
              peerConn.setLocalDescription(offer); 
           }, function (error) { 
              displaySignalMessage("erorr");
@@ -60,19 +62,34 @@ socket.on('connect', function(data) {
     }); 
 });
 
+//Data Channel Specific methods
+function dataChannelStateChanged(event) {
+	if (dataChannel.readyState === 'open') {
+        displaySignalMessage("Data Channel open");
+		dataChannel.onmessage = receiveDataChannelMessage;
+        socket.disconnect();
+        setInterval(function(){ dataChannel.send(new Date().getMilliseconds()); }, 500);
+	}
+}
+
+function receiveDataChannelMessage(event) {
+    new Date().getMilliseconds - event.data
+	console.log("From DataChannel:" + event.data);
+}
+
+
+
+function receiveDataChannel(event) {
+	displaySignalMessage("Receiving a data channel");
+	dataChannel = event.channel;
+	dataChannel.onmessage = receiveDataChannelMessage;
+}
 
 
 
 socket.on('message', function(message) {
     
-
-    
-
-    
-    
-    
     var data = JSON.parse(message); 
-    
     switch(data.type) { 
       case "offer": 
         displaySignalMessage("Offer received");
@@ -80,6 +97,7 @@ socket.on('message', function(message) {
          break; 
       case "answer":
          displaySignalMessage("answer received");
+        
          onAnswer(data.answer); 
          break; 
       case "candidate":
@@ -91,15 +109,13 @@ socket.on('message', function(message) {
    } 
 });
 
-
-
-
-
-
 //when somebody wants to call us 
 function onOffer(offer, sessionId) { 
+  console.log(offer);
    connectedUser = name; 
-   peerConn.setRemoteDescription(new RTCSessionDescription(offer));
+   peerConn.setRemoteDescription(new RTCSessionDescription(offer), function() {
+       console.log(peerConn);
+   },  console.error.bind(console));
 	
   peerConn.createAnswer(function (answer) { 
       peerConn.setLocalDescription(answer); 
@@ -107,7 +123,7 @@ function onOffer(offer, sessionId) {
       send({ 
          type: "answer", 
          answer: answer,
-         session: sessionId
+         session: otherId
       }); 
 		
    }, function (error) { 
@@ -116,24 +132,58 @@ function onOffer(offer, sessionId) {
 }
 
 //when another user answers to our offer 
-function onAnswer(answer) { 
-   peerConn.setRemoteDescription(new RTCSessionDescription(answer));
-    console.log(peerConn);
+function onAnswer(answer) {
+    peerConn.setRemoteDescription(new RTCSessionDescription(answer), function() {
+       console.log(peerConn);
+        
+   },  console.error.bind(console));
 }
 
 function send(message) {
     //socket.emit("message", message);
     socket.emit("message", (JSON.stringify(message)));
     displaySignalMessage("sending to server" + message);
-    console.log("sending to server," +  message);
+    console.log("sending to server," +  JSON.stringify(message));
 }
     
 
 //when we got ice candidate from another user 
 function onCandidate(candidate) { 
-   peerConn.addIceCandidate(new RTCIceCandidate(candidate)); 
+   peerConn.addIceCandidate(new RTCIceCandidate(candidate));
+    console.log(peerConn);
+   
 }
 
+
+
 function displaySignalMessage(message) {
-	document.getElementById("game").innerHTML = document.getElementById("game").innerHTML + "<br/>" + message;
-};  
+	
+};
+
+
+
+//creating data channel 
+function openDataChannel() { 
+
+   var dataChannelOptions = { 
+      reliable:false
+   }; 
+	
+    dataChannel = peerConn.createDataChannel("myDataChannel", dataChannelOptions);
+    
+    dataChannel.onopen = function(event) {
+      dataChannel.send("Hi there1");
+    };
+    
+   dataChannel.onerror = function (error) { 
+      console.log("Error:", error); 
+   };
+    
+    dataChannel.send("ssd");
+	
+   dataChannel.onmessage = function (event) { 
+      console.log("Got message:", event.data); 
+   };
+    
+    
+}
