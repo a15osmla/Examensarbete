@@ -134,13 +134,32 @@ document.addEventListener("keyup", function (e) {
 });
 
 
+function senddata() {
+     var time = 1000/60;  
+      setInterval(function(){ 
+          dataChannel.send("sdadas");
+    }, time);
+}
+
+
+var jumping;
+function jump() {
+  if (!jumping) {
+      console.log("jump");
+    jumping = true;
+    senddata();
+    setTimeout(function(){ jumping = false;}, 500);
+  }
+}
+
+
 Game.input = function() { 
     p2.animate.change(sprite_sheet.frame_sets2[0], 8);
     if (keys[87]) {
             if(!p1.jumping) {
                     p1.jumping = true;
                     p1.velY = -p1.speed * 5;
-                    
+                    jump();
             }
             if(lastDir == "left") {
                 //dataChannel.send(new DATE.getTime());
@@ -158,6 +177,7 @@ Game.input = function() {
         
         if (keys[87]) {
             if(!p1.jumping) {
+                jump();
                     p1.jumping = true;
                     p1.velY = -p1.speed * 5;
             }

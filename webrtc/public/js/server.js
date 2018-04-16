@@ -23,7 +23,6 @@ io.sockets.on("connection", function(socket){
    
 });
           
-    
     // Disconnect
     socket.on('disconnect', function() {
         connections.splice(connections.indexOf(socket), 1);
@@ -32,4 +31,4 @@ io.sockets.on("connection", function(socket){
 })
 
 
-server.listen(process.env.PORT || 1337);
+server.listen(process.env.PORT || 1338 );

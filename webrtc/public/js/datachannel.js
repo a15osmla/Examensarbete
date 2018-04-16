@@ -5,8 +5,10 @@ var config = {
                   ]
 };
 
+var storage = localStorage.setItem("ms", " ");
+
 var dataChannelOptions = {
-	ordered: false, //no guaranteed delivery, unreliable but faster 
+	ordered: true, //no guaranteed delivery, unreliable but faster 
 	maxRetransmitTime: 1000, //milliseconds
 };
 var dataChannel;
@@ -62,22 +64,30 @@ socket.on('connect', function(data) {
     }); 
 });
 
+
 //Data Channel Specific methods
 function dataChannelStateChanged(event) {
 	if (dataChannel.readyState === 'open') {
+        socket.disconnect();
         displaySignalMessage("Data Channel open");
 		dataChannel.onmessage = receiveDataChannelMessage;
-        socket.disconnect();
-        setInterval(function(){ dataChannel.send(new Date().getMilliseconds()); }, 500);
+        setInterval(function(){ 
+            var s = new Date();
+            dataChannel.send(s);                  
+        }, 1000/60);
 	}
 }
 
+
 function receiveDataChannelMessage(event) {
-    new Date().getMilliseconds - event.data
-	console.log("From DataChannel:" + event.data);
+    var s = event.data;
+    var ms =  new Date - s;
+    
+    var old = localStorage.getItem("ms");
+    var news = old + ms + (\n);
+    localStorage.setItem("ms", news);
+    console.log(ms);
 }
-
-
 
 function receiveDataChannel(event) {
 	displaySignalMessage("Receiving a data channel");
@@ -86,9 +96,7 @@ function receiveDataChannel(event) {
 }
 
 
-
 socket.on('message', function(message) {
-    
     var data = JSON.parse(message); 
     switch(data.type) { 
       case "offer": 
@@ -135,7 +143,6 @@ function onOffer(offer, sessionId) {
 function onAnswer(answer) {
     peerConn.setRemoteDescription(new RTCSessionDescription(answer), function() {
        console.log(peerConn);
-        
    },  console.error.bind(console));
 }
 
@@ -145,22 +152,16 @@ function send(message) {
     displaySignalMessage("sending to server" + message);
     console.log("sending to server," +  JSON.stringify(message));
 }
-    
 
 //when we got ice candidate from another user 
 function onCandidate(candidate) { 
    peerConn.addIceCandidate(new RTCIceCandidate(candidate));
     console.log(peerConn);
-   
 }
 
 
-
 function displaySignalMessage(message) {
-	
 };
-
-
 
 //creating data channel 
 function openDataChannel() { 

@@ -225,8 +225,12 @@ function jump() {
   if (!jumping) {
       console.log("jump");
     jumping = true;
-      
-    socket.emit("movement", {action: "jump", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()});
+        setInterval(function(){ 
+            var s = Date.now();
+            socket.emit("movement", {action: "jump", index: index, dir:lastDir, canvas:canvas.width, time:new Date().now()});               
+        }, 1000/60);
+	}
+  
     setTimeout(function(){ jumping = false;}, 500);
   }
 }
