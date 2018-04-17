@@ -25,12 +25,12 @@ Game.skipTicks = 1000 / Game.fps;
 
 localStorage.clear();
 var storage = localStorage.setItem("ms ", " ");
-
+var interval;
 var testing;
 function startTest() {
   if (!testing) {
     testing = true;
-     var interval = setInterval(function(){ 
+     interval = setInterval(function(){ 
         var start = new Date().getMilliseconds();
         var msg = {action : "test", id:otherId, start:start, testdata:testdata2};
         socket.emit("message", JSON.stringify(msg));
@@ -269,6 +269,7 @@ Game.input = function() {
         if (keys[16] || action == "block") {
            if(lastDir == "left") {
                 animation.change(set[8], 15); 
+                clearInterval(interval);
             } else {
                 animation.change(set[3], 15);
             }
@@ -286,6 +287,7 @@ Game.input = function() {
         // Move right - d   
         else if(keys[68] || action == "right") {
             animation.change(set[1], 15);
+            interva
             lastDir = "right";
             var msg = {action: "right", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
             socket.emit("message", JSON.stringify(msg));
