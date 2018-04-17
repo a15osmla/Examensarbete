@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var Game = {};
 var connections = [];
 var players = [];
+var msg;
 
 function Player(x, y, width, height, speed, id, p, index) {
     this.player = p;
@@ -48,53 +49,68 @@ io.sockets.on('connection', function(socket) {
         players.push(new Player(1200,380,100,100,5, socket.id, "p2", players.length));  
     }
 
-    io.sockets.emit('players', {players: players });
+    msg = {players: players};
+    io.sockets.emit('players', JSON.stringify(msg));
 
         // Receive player input from client
-        socket.on('movement', function(data) {
+        socket.on('message', function(datas) {
+            
             // Recieved action from client and the index of their respective player object
+            
+            var data = JSON.parse(datas);
             var action = data.action;
+            
             var index = data.index;
             var player = players[index];
             var canvas = {};
-            canvas.width = data.canvas;
             var lastDir = data.dir;
             var clientTime = data.time;
             var testData = data.data;
-
-            if (action == "left") {
+            var otherId = data.id;
+            var start = data.start;
+            
+            
+            if(action == "test") {
+                msg = {start: start, testdata: data.testdata};
+                //io.sockets.connected[otherId].emit("test", JSON.stringify(msg)); 
+                io.sockets.emit("test", JSON.stringify(msg)); 
+            }
+            
+            else if (action == "left") {
                 player.x -= player.speed;
-                io.sockets.emit('players', { players: players,time:clientTime});
+                msg = { players: players,time:clientTime};
+                io.sockets.emit('players', JSON.stringify(msg));
             } else if (data.action == "right") {
                 player.x += player.speed;
-                io.sockets.emit('players', { players: players, time:clientTime});
+                msg = { players: players,time:clientTime};
+                io.sockets.emit('players', JSON.stringify(msg));
             } else if (data.action == "jump") {
                 var interval = setInterval(function(){
                     if (!player.jumping) {
                         player.jumping = true;
                         player.grounded = false;
-                        player.velY = -player.speed * 5;
-                        io.sockets.emit('players', { players: players});
+                        player.velY = -player.speed * 5;         
                     } 
                     if(player.jumping) {
                         player.y += player.velY;;  
                         player.velY -= -player.gravity;
-                        io.sockets.emit('players', { players: players});        
                     } 
                     // Check if player is on the ground
                     if(player.y >= player.startY){
                         player.jumping = false;
                         player.grounded = true;
                         player.velY = 0;
-                        clearInterval(interval);
-                        io.sockets.emit('players', { players: players});
+                        clearInterval(interval);    
                     }
+                    msg = { players: players,time:clientTime};
+                    io.sockets.emit('players', JSON.stringify(msg));
+                    
                 }, 15);
             }
                                                     
         });
     
-//------------------------------------------------------------ Disconnect -----------------------------------------------------------------
+//------------------------------------------------------------ Disconnect ------------------------------------
     
     //DC
     socket.on('disconnect', function() {
@@ -105,4 +121,4 @@ io.sockets.on('connection', function(socket) {
 
 });
 
-server.listen(process.env.PORT || 1338);
+server.listen(process.env.PORT || 1337);

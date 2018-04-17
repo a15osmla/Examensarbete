@@ -33,8 +33,6 @@ io.sockets.on("connection", function(socket){
     
      // Recieve signal and send to all other clients
     socket.on("message", function(message) {
-         
-            
    
         var conn, connection, otherId, data;
       //accepting only JSON messages 
@@ -103,4 +101,4 @@ io.sockets.on("connection", function(socket){
     
 
 
-server.listen(process.env.PORT || 1338);
+server.listen(process.env.PORT || 1337);

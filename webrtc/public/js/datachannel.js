@@ -1,4 +1,4 @@
-var socket = io.connect();
+/*var socket = io.connect();
 var peerConn;
 var config = {
 	'iceServers': [{'url': 'stun:stun.1und1.de'}
@@ -72,7 +72,7 @@ function dataChannelStateChanged(event) {
         displaySignalMessage("Data Channel open");
 		dataChannel.onmessage = receiveDataChannelMessage;
         setInterval(function(){ 
-            var s = new Date();
+            var s =Date.now();
             dataChannel.send(s);                  
         }, 1000/60);
 	}
@@ -81,10 +81,10 @@ function dataChannelStateChanged(event) {
 
 function receiveDataChannelMessage(event) {
     var s = event.data;
-    var ms =  new Date - s;
+    var ms = Date.now() - s;
     
     var old = localStorage.getItem("ms");
-    var news = old + ms + (\n);
+    var news = old + ms + "\n";
     localStorage.setItem("ms", news);
     console.log(ms);
 }
@@ -187,4 +187,4 @@ function openDataChannel() {
    };
     
     
-}
+}*/
