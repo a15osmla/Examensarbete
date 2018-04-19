@@ -55,9 +55,6 @@ socket.on('connect', function(data) {
     dataChannel.onopen = dataChannelStateChanged;
     peerConn.ondatachannel = receiveDataChannel;
     
-    displaySignalMessage("RTCPeerConnection object was created");
-      
-    
     socket.on('connectedfirst', function(data){ 
         peerConn.onicecandidate = function (event) { 
         if (event.candidate) { 
@@ -72,34 +69,25 @@ socket.on('connect', function(data) {
         
         if(data == sessionId) {
           peerConn.createOffer(function (offer) { 
-            displaySignalMessage("create offer");
              send({ type: "offer", offer: offer, session: otherId}); 
              peerConn.setLocalDescription(offer); 
           }, function (error) { 
-             displaySignalMessage("erorr");
           }); 
         }
         
     }); 
 });
 
-
-
-
 socket.on('message', function(message) {
     var data = JSON.parse(message); 
     switch(data.type) { 
       case "offer": 
-        displaySignalMessage("Offer received");
          onOffer(data.offer, data.session); 
          break; 
       case "answer":
-         displaySignalMessage("answer received");
-        
          onAnswer(data.answer); 
          break; 
       case "candidate":
-        displaySignalMessage("candidate received");
          onCandidate(data.candidate); 
          break; 
       default: 
@@ -109,16 +97,16 @@ socket.on('message', function(message) {
 
 //when somebody wants to call us 
 function onOffer(offer, sessionId) { 
-  console.log(offer);
-   connectedUser = name; 
-   peerConn.setRemoteDescription(new RTCSessionDescription(offer), function() {
-       console.log(peerConn);
+    console.log(offer);
+    connectedUser = name; 
+    peerConn.setRemoteDescription(new RTCSessionDescription(offer), function() {
+        console.log(peerConn);
    },  console.error.bind(console));
 	
-  peerConn.createAnswer(function (answer) { 
-      peerConn.setLocalDescription(answer); 
+    peerConn.createAnswer(function (answer) { 
+    peerConn.setLocalDescription(answer); 
 		
-      send({ 
+        send({ 
          type: "answer", 
          answer: answer,
          session: otherId
@@ -139,7 +127,6 @@ function onAnswer(answer) {
 function send(message) {
     //socket.emit("message", message);
     socket.emit("message", (JSON.stringify(message)));
-    displaySignalMessage("sending to server" + message);
     console.log("sending to server," +  JSON.stringify(message));
 }
 
@@ -149,42 +136,10 @@ function onCandidate(candidate) {
     console.log(peerConn);
 }
 
-
-function displaySignalMessage(message) {
-};
-
-
-
-//creating data channel 
-function openDataChannel() { 
-
-   var dataChannelOptions = { 
-      reliable:true
-   }; 
-	
-    dataChannel = peerConn.createDataChannel("myDataChannel", dataChannelOptions);
-    
-    dataChannel.onopen = function(event) {
-      dataChannel.send("Hi there1");
-    };
-    
-   dataChannel.onerror = function (error) { 
-      console.log("Error:", error); 
-   };
-    
-	
-   dataChannel.onmessage = function (event) { 
-      console.log("Got message:", event.data); 
-   };
-    
-    
-}
-
 //Data Channel Specific methods
 function dataChannelStateChanged(event) {
 	if (dataChannel.readyState === 'open') {
         socket.disconnect();
-        displaySignalMessage("Data Channel open");
 		dataChannel.onmessage = receiveDataChannelMessage;
 	}
 }
@@ -200,18 +155,13 @@ function receiveDataChannelMessage(event) {
     //var old = localStorage.getItem("ms");
     //var news = old + ms + "\n";
     //localStorage.setItem("ms", news);
-     showTime();
      console.log(ms);
 }
 
 function receiveDataChannel(event) {
-	displaySignalMessage("Receiving a data channel");
 	dataChannel = event.channel;
 	dataChannel.onmessage = receiveDataChannelMessage;
 }
-
-
-                      
 
 var ctx, width, height, canvas;
 var Game = {};  

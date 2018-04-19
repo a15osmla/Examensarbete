@@ -63,7 +63,6 @@ io.sockets.on('connection', function(socket) {
             
             var data = JSON.parse(datas);
             var action = data.action;
-            
             var index = data.index;
             var player = players[index];
             var canvas = {};
