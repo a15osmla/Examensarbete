@@ -33,7 +33,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/views/index.html');    
+    res.sendFile(__dirname + '/views/index.html');  
+   res.send('<script>var t; var r=new Date().valueOf() + ( ' + (new Date().getTimezoneOffset()) +
+        ' - (new Date().getTimezoneOffset()) ) * -60000;' +
+        'setInterval( (t = new Date(r+=1000)),1000);' +
+        '</script>');
 });
 
 //-------------------------------------------------------On connection ----------------------------------------------------------------------
@@ -72,8 +76,8 @@ io.sockets.on('connection', function(socket) {
             
             if(action == "test") {
                 msg = {start: start, testdata: data.testdata};
-                //io.sockets.connected[otherId].emit("test", JSON.stringify(msg)); 
-                io.sockets.emit("test", JSON.stringify(msg)); 
+                io.sockets.connected[otherId].emit("test", JSON.stringify(msg)); 
+                //io.sockets.emit("test", JSON.stringify(msg)); 
             }
             
             else if (action == "left") {
@@ -121,4 +125,4 @@ io.sockets.on('connection', function(socket) {
 
 });
 
-server.listen(process.env.PORT || 1337);
+server.listen(process.env.PORT || 1338);

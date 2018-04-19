@@ -11,7 +11,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/views/index.html');    
+    res.sendFile(__dirname + '/views/index.html');
+    res.send('<script>var r=new Date().valueOf() + ( ' + (new Date().getTimezoneOffset()) +
+        ' - (new Date().getTimezoneOffset()) ) * -60000;' +
+        'setInterval(()=>{document.body.innerHTML = (new Date(r+=1000)).toLocaleString("en",{weekday:"long", month:"long", day:"numeric", year:"numeric", hour:"numeric", minute:"numeric", second:"numeric", hour12:false})},1000);' +
+        '</script>');
+    
+
+
 });
 
 io.sockets.on("connection", function(socket){
@@ -31,4 +38,4 @@ io.sockets.on("connection", function(socket){
 })
 
 
-server.listen(process.env.PORT || 1338 );
+server.listen(process.env.PORT || 1339 );
