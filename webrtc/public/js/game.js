@@ -10,11 +10,8 @@ var config = {
 };
 
 localStorage.clear();
-
 var testdata2 = "wqeewq wqeweqwe wqweqew wqwweqwq";
-
 var storage = localStorage.setItem("ms ", " ");
-
 var dataChannelOptions = {
 	ordered: false, //no guaranteed delivery, unreliable but faster 
 	maxRetransmitTime: 5, //milliseconds
@@ -22,9 +19,8 @@ var dataChannelOptions = {
 var dataChannel;
 var sessionId;
 var otherId;
-
-
 var testing;
+
 function startTest() {
   if (!testing) {
     testing = true;
@@ -298,7 +294,12 @@ document.addEventListener("keyup", function (e) {
 });
 
 Game.input = function() { 
-    var msg = {start:new Date().getMilliseconds(), testdata:testdata};
+    if(t) {
+        console.log("t");
+        var msg = {start:t,testdata:testdata};
+    } else {
+        var msg = {start:new Date().getMilliseconds(), testdata:testdata};
+    }
     p2.animate.change(sprite_sheet.frame_sets2[0], 8);
     //Start test
     canvas.addEventListener('click', function() {

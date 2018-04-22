@@ -468,7 +468,8 @@ function colCheck(shapeA, shapeB) {
         }
     }
     return colDir;
-}(function() {
+}
+(function() {
     var onEachFrame;
     if (window.requestAnimationFrame) {
        onEachFrame = function(cb) {

@@ -15,8 +15,6 @@ var action;
 var otherId;
 var sessionId;
 
-
-
 Game.width = window.innerWidth;
 Game.height = window.innerHeight;
 Game.fps = 60;
@@ -37,7 +35,6 @@ function startTest() {
     }, 1000/10);
   }
 }
-
 
 var sprite_sheet = {
     // P1
@@ -138,8 +135,8 @@ document.addEventListener("keyup", function (e) {
 Game.drawGFX = function() {
     Game.drawWorld();
     Game.drawPlayer();
-    //sGame.drawUI();
-    //Game.drawFPS(); 
+    Game.drawUI();
+    //Game.draw FPS(); 
 };  
 
 /* -------------------------------------------------------------------------- */
@@ -157,81 +154,73 @@ Game.drawPlayer = function() {
         ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
         player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);
     }
-    /*
-    if(player) {
-        if(player.player == "p1") {
-            ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
-            player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);
-        } else if(player.player == "p2"){
-            ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
-            player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);   
+}
+
+
+/*--------------------------------------------------------------------------  */
+Game.drawUI = function(){
+    for(var x = 0; x < players.length; x++) {
+        if(players[x].player == "p1") {
+            var p1 = players[x];
+            var hp1 = p1.hp/10 * 0.1; 
+            
+            ctx.fillStyle = "gray";
+            ctx.fillRect(canvas.width * 0.05, canvas.height * 0.05, canvas.width * 0.4, canvas.height*0.05);
+            
+            if(p1.hp >= 50) {
+            ctx.fillStyle = "green";
+
+            } else if(p1.hp <= 50 && p2.hp >= 40) {
+                ctx.fillStyle = "yellow";
+            }
+
+            else if(p1.hp < 40) {
+                ctx.fillStyle = "red";
+            }
+
+            if(hp1 >=0 && hp1 <= 100) {
+                ctx.fillRect(canvas.width * 0.05, canvas.height * 0.05, canvas.width * 0.4 * hp1, canvas.height*0.05);
+            }
+            
+            ctx.font = (0.03 * canvas.height + "px Arial");
+            ctx.fillStyle = "black";
+            ctx.fillText("HP: " + p1.hp,canvas.width * 0.22, canvas.height * 0.14);
+
+            ctx.font = (0.05 * canvas.height + "px Arial");
+            ctx.fillStyle = "green";
+            ctx.fillText("P1", p1.x+154, p1.y);
+           
+        } else {
+            var p2 = players[x];
+            var hp2 = p2.hp/10 * 0.1;
+            
+            ctx.fillStyle = "gray";
+            ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4, canvas.height*0.05);
+            
+            if(p2.hp >= 50) {
+            ctx.fillStyle = "green";
+            } else if(p2.hp <= 50 && p2.hp >= 40) {
+                ctx.fillStyle = "yellow";
+            }
+
+            else if(p2.hp < 40) {
+                ctx.fillStyle = "red";
+            }
+
+            if(hp2 >=0 && hp2 <= 100) {
+                ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4 * hp2, canvas.height*0.05);
+            }
+
+            ctx.font = (0.03 * canvas.height + "px Arial");
+            ctx.fillStyle = "black";
+            ctx.fillText("HP: " + p2.hp,canvas.width * 0.71, canvas.height * 0.14);
+            
+            ctx.font = (0.05 * canvas.height + "px Arial");
+            ctx.fillStyle = "black";
+            ctx.fillText("P2", p2.x+154, p2.y); 
         }
     }
-    */  
 }
-
-    
-
-/* -------------------------------------------------------------------------- 
-Game.drawUI = function(){
-    var hp1 = p1.hp/10 * 0.1;
-    var hp2 = p2.hp/10 * 0.1;
-    
-    ctx.fillStyle = "gray";
-    ctx.fillRect(canvas.width * 0.05, canvas.height * 0.05, canvas.width * 0.4, canvas.height*0.05);
-    ctx.fillStyle = "gray";
-    ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4, canvas.height*0.05);
-    
-    
-    if(p1.hp >= 50) {
-        ctx.fillStyle = "green";
-        
-    } else if(p1.hp <= 50 && p2.hp >= 40) {
-        ctx.fillStyle = "yellow";
-    }
-    
-    else if(p1.hp < 40) {
-        ctx.fillStyle = "red";
-    }
-    
-    if(hp1 >=0 && hp1 <= 100) {
-        ctx.fillRect(canvas.width * 0.05, canvas.height * 0.05, canvas.width * 0.4 * hp1, canvas.height*0.05);
-    }
-
-    if(p2.hp >= 50) {
-        ctx.fillStyle = "green";
-        
-    } else if(p2.hp <= 50 && p2.hp >= 40) {
-        ctx.fillStyle = "yellow";
-    }
-    
-    
-    
-    else if(p2.hp < 40) {
-        ctx.fillStyle = "red";
-    }
-    
-    if(hp2 >=0 && hp2 <= 100) {
-        ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4 * hp2, canvas.height*0.05);
-    }
-    
-    ctx.font = (0.03 * canvas.height + "px Arial");
-    ctx.fillStyle = "black";
-    ctx.fillText("HP: " + p2.hp,canvas.width * 0.71, canvas.height * 0.14);
-    
-    ctx.font = (0.03 * canvas.height + "px Arial");
-    ctx.fillStyle = "black";
-    ctx.fillText("HP: " + p1.hp,canvas.width * 0.22, canvas.height * 0.14);
-    
-    ctx.font = (0.05 * canvas.height + "px Arial");
-    ctx.fillStyle = "green";
-    ctx.fillText("P1", p1.x+154, p1.y);
-    
-    ctx.font = (0.05 * canvas.height + "px Arial");
-    ctx.fillStyle = "black";
-    ctx.fillText("P2", p2.x+154, p2.y); 
-}
-
 
 /* -------------------------------------------------------------------------- */
 var jumping;
@@ -240,7 +229,6 @@ function jump() {
         jumping = true;
         msg = {action: "jump", index: index, dir:lastDir};
         socket.emit("message", JSON.stringify(msg)); 
-      jumping = true;
 	}
     setTimeout(function(){ jumping = false; }, 500);
 }
@@ -269,11 +257,11 @@ Game.input = function() {
         if (keys[16] || action == "block") {
            if(lastDir == "left") {
                 animation.change(set[8], 15);
-                interval = false;
-                clearInterval(interval);
             } else {
                 animation.change(set[3], 15);
             }
+            var msg = {action: "block", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
+            socket.emit("message", JSON.stringify(msg));
         }
         
         // Punch - space
@@ -283,6 +271,8 @@ Game.input = function() {
             } else {
                 animation.change(set[4], 15);
             }
+            var msg = {action: "punch", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
+            socket.emit("message", JSON.stringify(msg));
         }
         
         // Move right - d   
@@ -306,7 +296,7 @@ Game.input = function() {
         else if (keys[65] || action == "left") {
             animation.change(set[6], 15);
             lastDir = "left";
-             var msg = {action: "left", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
+            var msg = {action: "left", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
                         
             socket.emit("message",JSON.stringify(msg));
             
@@ -328,8 +318,10 @@ Game.input = function() {
             } else {
                 animation.change(set[2], 8);  
             } 
+            var msg = {action: "jump", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
+            socket.emit("message", JSON.stringify(msg));
         }
-
+        
         else{ 
             if(lastDir == "left") {
                 animation.change(set[5], 15);   
@@ -338,9 +330,7 @@ Game.input = function() {
             }    
         }
     }
-   
     animation.update(); 
-    Game.drawGFX();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -349,9 +339,9 @@ Game.pause = function() {
 };
 
 Game.update = function(tick) {
-    
     Game.tick = tick; 
     Game.input();
+    Game.drawGFX();
 }
 /* -------------------------------------------------------------------------- */
 Game.initialize = function() {
@@ -420,6 +410,7 @@ Game.run = (function() {
         }
     };
 })();
+
 /* -------------------------------------------------------------------------- */
 (function() {
     var onEachFrame;

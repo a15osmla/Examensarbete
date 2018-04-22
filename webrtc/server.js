@@ -7,13 +7,21 @@ var bodyParser = require('body-parser');
 var connections = [];
 var users = [];
 var sessionId;
-
+var t;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/views/index.html');    
+    
+    /*
+    res.send('<script> var t; var r=new Date().valueOf() + ( ' + (new Date().getTimezoneOffset()) +
+        ' - (new Date().getTimezoneOffset()) ) * -60000;' +
+        'setInterval(function(){ t = new Date(r+=1000)}, 1000);' +
+        '</script>');
+        */  
+    res.sendFile(__dirname + '/views/index.html');
+   
 });
 
 function sendTo(sessionId, message) {
@@ -28,8 +36,10 @@ io.sockets.on("connection", function(socket){
     
     if(connections.length == 2) {
         io.sockets.emit("connectedfirst", connections[1].id);
-    }
-    io.sockets.emit("users", {users:users});
+    }   
+    var serverTime = new Date().valueOf() + ((new Date().getTimezoneOffset()) - (new Date().getTimezoneOffset()) ) * -60000;
+    
+    io.sockets.emit("users", {users:usersm, time:serverTime});
     
      // Recieve signal and send to all other clients
     socket.on("message", function(message) {
