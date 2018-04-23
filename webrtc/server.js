@@ -8,6 +8,8 @@ var connections = [];
 var users = [];
 var sessionId;
 var t;
+var sTime;
+var eTime;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -34,13 +36,21 @@ io.sockets.on("connection", function(socket){
     users.push(socket.id);
     console.log(connections.length + " sockets connected");
     
+    var serverTime = new Date().valueOf() + ((new Date().getTimezoneOffset()) - (new Date().getTimezoneOffset()) ) * -60000;
+    io.sockets.emit("users", JSON.stringify({users:users, time:serverTime}));
+    console.log(serverTime);
+    
     if(connections.length == 2) {
         io.sockets.emit("connectedfirst", connections[1].id);
-    }   
-    var serverTime = new Date().valueOf() + ((new Date().getTimezoneOffset()) - (new Date().getTimezoneOffset()) ) * -60000;
+     
+    }  
     
-    io.sockets.emit("users", {users:usersm, time:serverTime});
+    socket.on("start", function(start){
+        sTime = JSON.parse(start);
+        console.log(sTime);
+    });
     
+
      // Recieve signal and send to all other clients
     socket.on("message", function(message) {
    

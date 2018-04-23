@@ -36,6 +36,7 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/views/index.html');
 });
 
+
 //-------------------------------------------------------On connection ----------------------------------------------------------------------
 
 io.sockets.on('connection', function(socket) {
@@ -44,9 +45,9 @@ io.sockets.on('connection', function(socket) {
     
     // Add a new player object for every connection (Player) 
     if(players.length % 2 == 0) {
-        players.push(new Player(100,380,100,100,5, socket.id, "p1", players.length)); 
+        players.push(new Player(100,450,100,100,5, socket.id, "p1", players.length)); 
     } else {
-        players.push(new Player(1200,380,100,100,5, socket.id, "p2", players.length));  
+        players.push(new Player(1200,450,100,100,5, socket.id, "p2", players.length));  
     }
 
     msg = {players: players};
@@ -69,10 +70,24 @@ io.sockets.on('connection', function(socket) {
             
             // Recieved action from client and the index of their respective player object
             if(action == "test") {
-                msg = {start: start, testdata: data.testdata};
+                msg = {start: start, testdata: data.testdata2};
                 io.sockets.connected[otherId].emit("test", JSON.stringify(msg)); 
                 //io.sockets.emit("test", JSON.stringify(msg)); 
-            } else if (action == "left") {
+            
+            }
+            if(action == "ping") {
+                msg = {start: start, testdata: data.testdata};
+                io.sockets.connected[otherId].emit("ping", JSON.stringify(msg)); 
+                //io.sockets.emit("test", JSON.stringify(msg)); 
+            }
+            
+             if(action == "pong") {
+                msg = {start: start, testdata: data.testdata};
+                io.sockets.connected[otherId].emit("latency", JSON.stringify(msg)); 
+                //io.sockets.emit("test", JSON.stringify(msg)); 
+            }
+            
+            else if (action == "left") {
                 player.x -= player.speed;
                 msg = { players: players,time:clientTime};
                 io.sockets.emit('players', JSON.stringify(msg));
@@ -84,20 +99,25 @@ io.sockets.on('connection', function(socket) {
                 player.blocking = true;
                 io.sockets.emit('players', JSON.stringify(msg));
             } else if (data.action == "punch") {
-              for(var x; x < players.length; x++) {
+                
+                for(var x = 0; x < players.length; x++) {
+                    
                     if(index != players[x].index) {
                         player2 = players[x];
+                    }
+                    if(player2) {
                         var cCheck = colCheck(player, player2);
                         if(cCheck == "r" && player2.blocking != true && player2.lastDir != "right") {
                             player2.hp += -5;
                             player2.blocking = false;
+                            console.log("punch");
                         } else if(cCheck == "l" && player2.blocking != true && player2.lastDir != "left") {
                             player2.hp += -5;
                             player2.blocking = false;
                         }
+                        io.sockets.emit('players', JSON.stringify(msg));
                     }
-                   io.sockets.emit('players', JSON.stringify(msg));
-              }
+                }
             } else if (data.action == "jump") {
                 var interval = setInterval(function(){
                     if (!player.jumping) {
@@ -120,25 +140,25 @@ io.sockets.on('connection', function(socket) {
                     io.sockets.emit('players', JSON.stringify(msg));
                 }, 15);
             }
-            
-        if(player.x >= canvas.width - 220){    
-            if(lastDir == "right") {
-                player.speed = 0 ;
-            } else {
-                player.speed = 5;
-            }
-            io.sockets.emit('players', JSON.stringify(msg));
+        if(canvas) {
+            if(player.x >= canvas - 250){    
+                if(lastDir == "right") {
+                    player.speed = 0 ;
+                } else {
+                    player.speed = 5;
+                }
+                io.sockets.emit('players', JSON.stringify(msg));
         }
     
-        if (player.x <= canvas.width - 130) {
-           if(lastDir == "left") {
-                player. speed = 0 ;
-            } else {
-                player.speed = 5;
+        if (player.x <= -150 ){
+                if(lastDir == "left") {
+                    player. speed = 0 ;
+                } else {
+                    player.speed = 5;
+                }
+                io.sockets.emit('players', JSON.stringify(msg));
             }
-            io.sockets.emit('players', JSON.stringify(msg));
-        }
-                                                    
+        }                                           
     });
     
 //------------------------------------------------------------ Disconnect ------------------------------------

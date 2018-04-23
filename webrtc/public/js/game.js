@@ -20,12 +20,18 @@ var dataChannel;
 var sessionId;
 var otherId;
 var testing;
+var pongTime;
+var pingTime;
+var latency;
 
+
+
+pingTime = Date.now();
 function startTest() {
   if (!testing) {
     testing = true;
-     var interval = setInterval(function(){ 
-        var msg = {start:new Date().getMilliseconds(), testdata:testdata};
+     var interval = setInterval(function(){
+        var msg = {type:"ping", testdata:testdata2, ping:Date.now()};
         dataChannel.send(JSON.stringify(msg)); 
     }, 1000/60);
     setTimeout(function(){ testing = false;}, 500);
@@ -36,13 +42,28 @@ socket.on('connect', function(data) {
     console.log("This clients id: " + socket.id);
     sessionId = socket.id;
     
-    socket.on('users', function(data) {
-        var array = data.users;
+    socket.on('users', function(datar) {
+        var data = JSON.parse(datar);
+        var array = (data.users);
         for(var x = 0; x < array.length; x++) {
             if(sessionId != array[x]) {
                otherId = array[x];
             }
         }
+        
+        /*
+        if(data) {
+            serverTimer = data.time;
+            console.log(serverTimer);
+            
+            if(!serverTime) {
+                  var servertimerer = setInterval(function(){ 
+                    serverTimer += 1000;
+                    serverTime = new Date(serverTimer);
+                    console.log(serverTime);
+                }, 1000);
+            }
+        } )*/
     });
  
     peerConn = new RTCPeerConnection(config, null);
@@ -142,16 +163,34 @@ function dataChannelStateChanged(event) {
 
 function receiveDataChannelMessage(event) {
     var parsedData = JSON.parse(event.data);
+    
+    if(parsedData.type == "ping") {
+        var msg = {type:"pong", test:testdata2, ping:parsedData.ping};
+        dataChannel.send(JSON.stringify(msg));
+    }
+    
+    if(parsedData.type == "pong") {
+        pingTime = parsedData.ping;
+        pongTime = Date.now();
+        ms = (pongTime - pingTime) / 2;
+        console.log(ms);
+        var old = localStorage.getItem("ms");
+        var news = old + ms + "\n";
+        localStorage.setItem("ms", news);
+    }
+    
+    /*
     var s = parseInt(parsedData.start);
-    var n = new Date().getMilliseconds();
+    var n = Date.now();
+    console.log("S: " + s + " N: " + n);
     //var ms = Math.abs(n - s) ;
     var ms = n - s;
-     //console.log(ms);
     
-    //var old = localStorage.getItem("ms");
-    //var news = old + ms + "\n";
-    //localStorage.setItem("ms", news);
+ 
      console.log(ms);
+    
+   ;
+    */
 }
 
 function receiveDataChannel(event) {
@@ -293,29 +332,27 @@ document.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
 });
 
-Game.input = function() { 
-    if(t) {
-        console.log("t");
-        var msg = {start:t,testdata:testdata};
-    } else {
-        var msg = {start:new Date().getMilliseconds(), testdata:testdata};
-    }
+Game.input = function() {     
+    var msg = {start:Date.now(), testdata:testdata};
+    
     p2.animate.change(sprite_sheet.frame_sets2[0], 8);
+    
+    
     //Start test
     canvas.addEventListener('click', function() {
+        /*
         if (dataChannel.readyState === 'open') {
             dataChannel.send(JSON.stringify(msg)); 
             console.log("right");
         }       
-        
+        */
+        startTest();
     }, false);
-    
     
     if (keys[87]) {
             if(!p1.jumping) {
                     p1.jumping = true;
-                    p1.velY = -p1.speed * 5;
-                 
+                    p1.velY = -p1.speed * 5; 
             }
             if(lastDir == "left") {
                 //dataChannel.send(new DATE.getTime());
@@ -323,9 +360,6 @@ Game.input = function() {
             } else {
                 p1.animate.change(sprite_sheet.frame_sets[2], 8);  
             } 
-         
-         
-     
     }
     
     // Move right - d   
@@ -370,7 +404,8 @@ Game.input = function() {
             } 
         }
         if (dataChannel.readyState === 'open') {
-            dataChannel.send(JSON.stringify(msg)); 
+            dataChannel.send(JSON.stringify(msg));
+            console.log(serverTime);
         }
     } 
     
@@ -386,12 +421,15 @@ Game.input = function() {
         var currentFrame = p1.animate.getFrame();
   
         if (contact == "r"  && p2.hp > 10 || contact == "l" && p2.hp > 10) {
-                if(contact == "r" || contact == "l") {
-                      if(currentFrame == 0) {
-                        p2.hp -= 5;
-                        console.log("hit R");   
-                      }
+            if(contact == "r" || contact == "l") {
+                if(currentFrame == 0) {
+                    p2.hp -= 5;
+                    console.log("hit R");   
                 }
+            }
+        }
+        if (dataChannel.readyState === 'open') {
+            dataChannel.send(JSON.stringify(msg)); 
         }
     }
     
