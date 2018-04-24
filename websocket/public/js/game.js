@@ -54,7 +54,7 @@ var sprite_sheet = {
                 [29,30,31,32,33,34],// set 1: Walk right
                 [35,36,37], // set 2: jump right
                 [38], // set 3: block right
-                [40,41], // set 4: punch right
+                [41,40], // set 4: punch right
                 [42], // set 5: stand left
                 [48,47,46,45,44,43], // set 6: walk left
                 [55,54], // set 7: punch left
@@ -170,7 +170,7 @@ Game.drawUI = function(){
             if(p1.hp >= 50) {
             ctx.fillStyle = "green";
 
-            } else if(p1.hp <= 50 && p2.hp >= 40) {
+            } else if(p1.hp <= 50 && p1.hp >= 40) {
                 ctx.fillStyle = "yellow";
             }
 
@@ -214,7 +214,6 @@ Game.drawUI = function(){
             ctx.font = (0.03 * canvas.height + "px Arial");
             ctx.fillStyle = "black";
             ctx.fillText("HP: " + p2.hp,canvas.width * 0.71, canvas.height * 0.14);
-            
             ctx.font = (0.05 * canvas.height + "px Arial");
             ctx.fillStyle = "black";
             ctx.fillText("P2", p2.x+154, p2.y); 
@@ -226,19 +225,33 @@ Game.drawUI = function(){
 var jumping;
 function jump() {
   if (!jumping) {
-        jumping = true;
-        msg = {action: "jump", index: index, dir:lastDir};
+      jumping = true;
+      msg = {action: "jump", index: index, dir:lastDir};
+      socket.emit("message", JSON.stringify(msg)); 
+      setTimeout(function(){ jumping = false; }, 500);
+  }
+}
+
+var punching;
+function punch() {
+    if (!punching) {
+        punching = true;
+        var msg = {action: "punch", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
         socket.emit("message", JSON.stringify(msg)); 
-	}
-    setTimeout(function(){ jumping = false; }, 500);
+        setTimeout(function(){ punching = false; },475);
+    }
 }
 
 Game.input = function() {
     
+    /*
     canvas.addEventListener('click', function() {
-        startTest();
+        if(players.length >= 1) {
+            startTest();
+        }
+        
     }, false);
-
+    */
     
     if(player.player == "p1") {
         set = sprite_sheet.frame_sets;
@@ -273,8 +286,8 @@ Game.input = function() {
             } else {
                 animation.change(set[4], 15);
             }
-            var msg = {action: "punch", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
-            socket.emit("message", JSON.stringify(msg));
+            
+            punch();
         }
         
         // Move right - d   
@@ -298,13 +311,11 @@ Game.input = function() {
         else if (keys[65] || action == "left") {
             animation.change(set[6], 15);
             lastDir = "left";
-            //var msg = {action: "left", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
-                 var start = Date.now();
-                var msg = {action : "test", id:otherId, start:start, testdata:testdata2};       
+            var msg = {action: "left", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};     
             socket.emit("message",JSON.stringify(msg));
             
             if (keys[87] || action == "jump") {
-             jump();
+             jump(); 
                 if(lastDir == "left") {
                    
                     animation.change(set[9], 8);  
@@ -321,8 +332,6 @@ Game.input = function() {
             } else {
                 animation.change(set[2], 8);  
             } 
-            var msg = {action: "jump", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
-            socket.emit("message", JSON.stringify(msg));
         }
         
         else{ 
@@ -385,9 +394,6 @@ Game.initialize = function() {
         socket.on("players", function(data) {
             var parsedData = JSON.parse(data);
             players = parsedData.players;
-            var startTime = data.time;
-            var ms = new Date().getTime() - startTime;
-            console.log(ms);
             
             for(var x = 0; x < players.length; x++) {
                 var sid = socket.io.engine.id;

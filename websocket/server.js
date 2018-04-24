@@ -36,7 +36,6 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/views/index.html');
 });
 
-
 //-------------------------------------------------------On connection ----------------------------------------------------------------------
 
 io.sockets.on('connection', function(socket) {
@@ -66,27 +65,35 @@ io.sockets.on('connection', function(socket) {
             var otherId = data.id;
             var start = data.start;
             var player2;
+            var cCheck;
+            
             
             
             // Recieved action from client and the index of their respective player object
             if(action == "test") {
-                msg = {start: start, testdata: data.testdata2};
-                io.sockets.connected[otherId].emit("test", JSON.stringify(msg)); 
+                if(players.length >= 2) {
+                    msg = {start: start, testdata: data.testdata2};
+                    io.sockets.connected[otherId].emit("test", JSON.stringify(msg));
+                }
                 //io.sockets.emit("test", JSON.stringify(msg)); 
             
             }
             if(action == "ping") {
-                msg = {start: start, testdata: data.testdata};
-                io.sockets.connected[otherId].emit("ping", JSON.stringify(msg)); 
-                //io.sockets.emit("test", JSON.stringify(msg)); 
+                if(players.length >= 2) {
+                    msg = {start: start, testdata: data.testdata};
+                    io.sockets.connected[otherId].emit("ping", JSON.stringify(msg)); 
+                //io.sockets.emit("test", JSON.stringify(msg));
+                }
             }
             
              if(action == "pong") {
-                msg = {start: start, testdata: data.testdata};
-                io.sockets.connected[otherId].emit("latency", JSON.stringify(msg)); 
+                 if(players.length >= 2) {
+                    msg = {start: start, testdata: data.testdata};
+                     io.sockets.connected[otherId].emit("latency", JSON.stringify(msg)); 
+                 }
                 //io.sockets.emit("test", JSON.stringify(msg)); 
             }
-            
+                
             else if (action == "left") {
                 player.x -= player.speed;
                 msg = { players: players,time:clientTime};
@@ -106,29 +113,31 @@ io.sockets.on('connection', function(socket) {
                         player2 = players[x];
                     }
                     if(player2) {
+                        
+                        setTimeout(function(){ jumping = false; 
+                                             
+                                             }, 500);
                         var cCheck = colCheck(player, player2);
-                        if(cCheck == "r" && player2.blocking != true && player2.lastDir != "right") {
+                        if(cCheck == "r" || cCheck == "l" && player2.blocking != true) {
                             player2.hp += -5;
                             player2.blocking = false;
-                            console.log("punch");
-                        } else if(cCheck == "l" && player2.blocking != true && player2.lastDir != "left") {
-                            player2.hp += -5;
-                            player2.blocking = false;
-                        }
+                        }   
                         io.sockets.emit('players', JSON.stringify(msg));
                     }
                 }
             } else if (data.action == "jump") {
                 var interval = setInterval(function(){
-                    if (!player.jumping) {
+                    if (!player.jumping && player.grounded) {
                         player.jumping = true;
                         player.grounded = false;
                         player.velY = -player.speed * 5;         
                     } 
+                    
                     if(player.jumping) {
-                        player.y += player.velY;;  
+                        player.y += player.velY; 
                         player.velY -= -player.gravity;
                     } 
+                    
                     // Check if player is on the ground
                     if(player.y >= player.startY){
                         player.jumping = false;
@@ -136,10 +145,13 @@ io.sockets.on('connection', function(socket) {
                         player.velY = 0;
                         clearInterval(interval);    
                     }
+                    
                     msg = { players: players,time:clientTime};
                     io.sockets.emit('players', JSON.stringify(msg));
                 }, 15);
-            }
+               
+                
+        }
         if(canvas) {
             if(player.x >= canvas - 250){    
                 if(lastDir == "right") {
@@ -166,15 +178,25 @@ io.sockets.on('connection', function(socket) {
     //DC
     socket.on('disconnect', function() {
         connections.splice(connections.indexOf(socket), 1);
-        players.pop();
+        for(var x = 0; x < players.length; x++ ) {
+            if(socket.id == players[x].pid){
+                players.splice(x, 1);
+                console.log("splice");
+            }
+        }
         console.log("A socket disconnected: %s sockets connected", connections.length);
+        msg = {players: players};
+        io.sockets.emit('players', JSON.stringify(msg));
     }); 
-
 });
 
-server.listen(process.env.PORT || 1338);
+server.listen(process.env.PORT || 1337);
 
 /* -------------------------------------------------------------------------- */
+
+//positioner
+//
+
 function colCheck(shapeA, shapeB) {
     // get the vectors to check against
     var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
@@ -184,25 +206,29 @@ function colCheck(shapeA, shapeB) {
         hHeights = (shapeA.height / 2) + (shapeB.height / 2),
         colDir = null;
 
+    
     if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
 
         var oX = hWidths - Math.abs(vX),
             oY = hHeights - Math.abs(vY);
         if (oX >= oY) {
+            console.log("colCheck");
             if (vY > 0) {
                 colDir = "t";
-                shapeA.y += oY;
+                //shapeA.y += oY;
+                
             } else {
                 colDir = "b";
-                shapeA.y -= oY;
+                //shapeA.y -= oY;
             }
         } else {
+            console.log("colCheck");
             if (vX > 0) {
                 colDir = "l";
-                shapeA.x += oX;
+                //shapeA.x += oX;
             } else {
                 colDir = "r";
-                shapeA.x -= oX;
+               // shapeA.x -= oX;
             }
         }
     }
