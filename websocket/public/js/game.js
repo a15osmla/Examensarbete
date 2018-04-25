@@ -24,6 +24,7 @@ localStorage.clear();
 var storage = localStorage.setItem("ms", "");
 var interval;
 var testing;
+var gameStatus;
 
 function startTest() {
   if (!testing) {
@@ -217,6 +218,9 @@ Game.drawUI = function(){
             ctx.font = (0.05 * canvas.height + "px Arial");
             ctx.fillStyle = "black";
             ctx.fillText("P2", p2.x+154, p2.y); 
+            if(p1.hp <= 0 || p2.hp <= 0 ) {
+                gameStatus = "end";
+            }
         }
     }
 }
@@ -243,7 +247,6 @@ function punch() {
 }
 
 Game.input = function() {
-    
     /*
     canvas.addEventListener('click', function() {
         if(players.length >= 1) {
@@ -256,18 +259,16 @@ Game.input = function() {
     if(player.player == "p1") {
         set = sprite_sheet.frame_sets;
         if(!lastDir) {
-               lastDir = "right"; 
-            }
-
+            lastDir = "right"; 
+        }
     } else if (player.player == "p2") {
+        set = sprite_sheet.frame_sets2;
         if(!lastDir) {
            lastDir = "left"; 
-        }
-        set = sprite_sheet.frame_sets2;
+        } 
     }
     
     if(set) {
-        
         // Block - shift
         if (keys[16] || action == "block") {
            if(lastDir == "left") {
@@ -351,9 +352,11 @@ Game.pause = function() {
 };
 
 Game.update = function(tick) {
-    Game.tick = tick; 
-    Game.input();
-    Game.drawGFX();
+    if(gameStatus != "end") {
+        Game.tick = tick; 
+        Game.input();
+        Game.drawGFX();
+    }
 }
 /* -------------------------------------------------------------------------- */
 Game.initialize = function() {

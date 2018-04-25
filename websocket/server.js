@@ -10,7 +10,7 @@ var connections = [];
 var players = [];
 var msg;
 
-function Player(x, y, width, height, speed, id, p, index) {
+function Player(x, y, width, height, speed, id, p, index, dir) {
     this.player = p;
     this.pid = id;
     this.index = index;
@@ -27,6 +27,7 @@ function Player(x, y, width, height, speed, id, p, index) {
     this.startY = y;
     this.gravity = 2;
     this.hp = 100;
+    this.dir = dir;
 }
 
 app.use(bodyParser.json());
@@ -44,9 +45,9 @@ io.sockets.on('connection', function(socket) {
     
     // Add a new player object for every connection (Player) 
     if(players.length % 2 == 0) {
-        players.push(new Player(100,450,100,100,5, socket.id, "p1", players.length)); 
+        players.push(new Player(100,450,100,100,5, socket.id, "p1", players.length, "right")); 
     } else {
-        players.push(new Player(1200,450,100,100,5, socket.id, "p2", players.length));  
+        players.push(new Player(1200,450,100,100,5, socket.id, "p2", players.length, "left"));  
     }
 
     msg = {players: players};
@@ -68,7 +69,6 @@ io.sockets.on('connection', function(socket) {
             var cCheck;
             
             
-            
             // Recieved action from client and the index of their respective player object
             if(action == "test") {
                 if(players.length >= 2) {
@@ -76,8 +76,8 @@ io.sockets.on('connection', function(socket) {
                     io.sockets.connected[otherId].emit("test", JSON.stringify(msg));
                 }
                 //io.sockets.emit("test", JSON.stringify(msg)); 
-            
             }
+            
             if(action == "ping") {
                 if(players.length >= 2) {
                     msg = {start: start, testdata: data.testdata};
@@ -96,35 +96,48 @@ io.sockets.on('connection', function(socket) {
                 
             else if (action == "left") {
                 player.x -= player.speed;
+                player.dir = lastDir;
                 msg = { players: players,time:clientTime};
                 io.sockets.emit('players', JSON.stringify(msg));
             } else if (data.action == "right") {
                 player.x += player.speed;
+                player.dir = lastDir;
                 msg = { players: players,time:clientTime};
                 io.sockets.emit('players', JSON.stringify(msg));
             } else if (data.action == "block") {
                 player.blocking = true;
                 io.sockets.emit('players', JSON.stringify(msg));
+                player.blocking = false;
             } else if (data.action == "punch") {
-                
                 for(var x = 0; x < players.length; x++) {
-                    
                     if(index != players[x].index) {
                         player2 = players[x];
                     }
-                    if(player2) {
-                        
-                        setTimeout(function(){ jumping = false; 
-                                             
-                                             }, 500);
-                        var cCheck = colCheck(player, player2);
-                        if(cCheck == "r" || cCheck == "l" && player2.blocking != true) {
+                }
+                
+                if(player2) {
+                    var cCheck = colCheck(player, player2);
+                    if (cCheck == "l" || cCheck == "r") {
+                        if (player.dir == "right" && player2.dir == "left" ) {
+                            if(!player2.blocking) {
+                                player2.hp += -5;
+                            } 
+                        } else if(player2.dir == "left" && player.dir == "right") {
+                            if(!player2.blocking) {
+                                player2.hp += -5;
+                            }
+                        } else if(player.dir == "right" && player.dir == "right") {
                             player2.hp += -5;
-                            player2.blocking = false;
-                        }   
-                        io.sockets.emit('players', JSON.stringify(msg));
+                        }
+                        else {
+                            player2.hp += -5;
+                        } 
                     }
                 }
+                
+            io.sockets.emit('players', JSON.stringify(msg));
+                
+                
             } else if (data.action == "jump") {
                 var interval = setInterval(function(){
                     if (!player.jumping && player.grounded) {
@@ -178,12 +191,23 @@ io.sockets.on('connection', function(socket) {
     //DC
     socket.on('disconnect', function() {
         connections.splice(connections.indexOf(socket), 1);
-        for(var x = 0; x < players.length; x++ ) {
-            if(socket.id == players[x].pid){
+        var temp;
+        var sid = socket.id;
+        for(var x = 0; x < players.length-1; x++ ) {
+            temp = players[x]; 
+            players[x] = players[x+1];
+            players[x+1] = temp; 
+        }
+        
+        //set p2 to p1
+        for(var x = 0; x < players.length; x++) {
+            players[x].index = x;
+            players[x].player = "p1";
+            if(sid == players[x].pid) {
                 players.splice(x, 1);
-                console.log("splice");
             }
         }
+        
         console.log("A socket disconnected: %s sockets connected", connections.length);
         msg = {players: players};
         io.sockets.emit('players', JSON.stringify(msg));
@@ -212,7 +236,6 @@ function colCheck(shapeA, shapeB) {
         var oX = hWidths - Math.abs(vX),
             oY = hHeights - Math.abs(vY);
         if (oX >= oY) {
-            console.log("colCheck");
             if (vY > 0) {
                 colDir = "t";
                 //shapeA.y += oY;
@@ -222,7 +245,6 @@ function colCheck(shapeA, shapeB) {
                 //shapeA.y -= oY;
             }
         } else {
-            console.log("colCheck");
             if (vX > 0) {
                 colDir = "l";
                 //shapeA.x += oX;
