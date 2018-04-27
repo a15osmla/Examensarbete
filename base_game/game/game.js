@@ -4,9 +4,7 @@ var keys = {};
 var filterStrength = 20;
 var frameTime = 0, lastLoop = new Date, thisLoop, thisFrameTime;
 var lastDir;
-
-Game.width = window.innerWidth;
-Game.height = window.innerHeight;
+var players = [];
 Game.fps = 60;
 Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
@@ -30,10 +28,6 @@ var sprite_sheet = {
     ],
     image:new Image()
   };
-
-/* -------------------------------------------------------------------------- */
-
-
 /* -------------------------------------------------------------------------- */
 
  /* Each sprite sheet tile is 16x16 pixels in dimension. */
@@ -50,7 +44,7 @@ var sprite_sheet = {
       
     this.delay = delay;// The number of game cycles to wait until the next frame change.
     this.frame = 0;// The value in the sprite sheet of the sprite image / tile to display.
-    this.frame_index = 0;// The frame's index in the current animation frame set.
+    this.frame_index = 0;// The f   rame's index in the current animation frame set.
     this.frame_set = frame_set;// The current animation frame set that holds sprite tile values.
   };
 
@@ -101,28 +95,31 @@ function Player(x, y, width, height, speed) {
     this.width = width;
     this.height = height;
     this.speed = speed;
+    this.orgSpeed = speed;
     this.grounded = false;
     this.jumping = false;
     this.blocking = false;
     this.velY = 0;
     this.velX = 0;
     this.startY = y;
-    this.gravity = 2;
+    this.gravity = speed/2;
     this.hp = 100;
     this.animate = new Animation();
     this.moving = function(dir) {
         if(dir == "right") {
             this.x = this.x+this.speed;
-        } 
+        }
         else if(dir == "left") {
             this.x = this.x-this.speed;
         } 
     }
 }
 
+var p1 = new Player(0.01, 0.6, 0.15, 0.35, 0.004);
+var p2 = new Player(0.80, 0.6, 0.15, 0.35, 0.004);
 
-var p1 = new Player(Game.width * 0.01, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
-var p2 = new Player(Game.width * 0.10, Game.height * 0.5, Game.width * 0.1, Game.height * 0.4, 5);
+players.push(p1);
+players.push(p2);
 
 document.addEventListener("keydown", function (e) {
         keys[e.keyCode] = true;
@@ -133,12 +130,33 @@ document.addEventListener("keyup", function (e) {
 });
 
 
+
+
+var punching;
+function punch() {
+    if (!punching) {
+        punching = true;
+        var contact = colCheck(p2,p1);
+        var currentFrame = p1.animate.getFrame();
+  
+        if (contact == "r"  && p2.hp > 10 || contact == "l" && p2.hp > 10) {
+                if(contact == "r" || contact == "l") {
+                        p2.hp -= 5;
+                }
+        }
+        
+        setTimeout(function(){ punching = false; },475);
+    }
+}
+
 Game.input = function() { 
     p2.animate.change(sprite_sheet.frame_sets2[0], 8);
+    
+    //Jump - w
     if (keys[87]) {
             if(!p1.jumping) {
                     p1.jumping = true;
-                    p1.velY = -p1.speed * 5;
+                    p1.velY = -p1.speed * 6;
             }
             if(lastDir == "left") {
                 p1.animate.change(sprite_sheet.frame_sets[9], 8);  
@@ -150,13 +168,13 @@ Game.input = function() {
     // Move right - d   
     if (keys[68]) {
         p1.moving("right");
-        p1.animate.change(sprite_sheet.frame_sets[1], 15);
+        p1.animate.change(sprite_sheet.frame_sets[1], 12);
         lastDir = "right";
         
         if (keys[87]) {
             if(!p1.jumping) {
                     p1.jumping = true;
-                    p1.velY = -p1.speed * 5;
+                    p1.velY = -p1.speed;
             }
             if(lastDir == "left") {
                 p1.animate.change(sprite_sheet.frame_sets[9], 8);  
@@ -164,18 +182,17 @@ Game.input = function() {
                 p1.animate.change(sprite_sheet.frame_sets[2], 8);  
             } 
         }
-    } 
+    }
   
-    // Move left - a
+    // Move left - a    
     else if (keys[65]) {
         p1.moving("left");
-        p1.animate.change(sprite_sheet.frame_sets[6], 15);
+        p1.animate.change(sprite_sheet.frame_sets[6], 12);
         lastDir = "left";
         
         if (keys[87]) {
             if(!p1.jumping) {
                     p1.jumping = true;
-                    p1.velY = -p1.speed * 5;
             }
             if(lastDir == "left") {
                 p1.animate.change(sprite_sheet.frame_sets[9], 8);  
@@ -193,17 +210,7 @@ Game.input = function() {
             p1.animate.change(sprite_sheet.frame_sets[4], 15);
         }
             
-        var contact = colCheck(p2,p1);
-        var currentFrame = p1.animate.getFrame();
-  
-        if (contact == "r"  && p2.hp > 10 || contact == "l" && p2.hp > 10) {
-                if(contact == "r" || contact == "l") {
-                      if(currentFrame == 0) {
-                        p2.hp -= 5;
-                        console.log("hit R");   
-                      }
-                }
-        }
+        punch();
     }
     
    // Block - shift
@@ -214,7 +221,8 @@ Game.input = function() {
             p1.animate.change(sprite_sheet.frame_sets[3], 15);
         }
    }
-
+    
+    // Player animation is set to standing frame if no key has been pressed
     else{ 
         if(lastDir == "left") {
             p1.animate.change(sprite_sheet.frame_sets[5], 15);   
@@ -223,11 +231,13 @@ Game.input = function() {
         }    
     }
     
+    
     // If player is jumping change player y position and reduce velocity based on gravity
     if(p1.jumping) {
         p1.y += p1.velY;
-        p1.velY += p1.gravity; 
+        p1.velY -= -p1.gravity;
     }
+    console.log(p1.y);
     
     // Check if player is on the ground
     if(p1.y >= p1.startY){
@@ -236,20 +246,21 @@ Game.input = function() {
         p1.velY = 0;
     }
     
-    //
-    if(p1.x >= canvas.width - 220){    
+    
+    // Add borders to canvas
+    if(canvas.width * p1.x>= canvas.width * 0.90){    
         if(lastDir == "right") {
             p1.speed = 0 ;
         } else {
-            p1.speed = 5;
+            p1.speed = p1.orgSpeed;
         }
     }
     
-    if (p1.x <= -130) {
+    if (canvas.width * p1.x <= canvas.width * -0.07) {
        if(lastDir == "left") {
             p1. speed = 0 ;
         } else {
-            p1.speed = 5;
+            p1.speed = p1.orgSpeed;
         }
     }
     
@@ -261,7 +272,7 @@ Game.input = function() {
 /* -------------------------------------------------------------------------- */
 Game.drawGFX = function() {
     Game.drawWorld();
-    Game.drawPlayer(p1);
+    Game.drawPlayers();
     Game.drawUI();
     Game.drawFPS();
 };
@@ -276,12 +287,12 @@ Game.drawWorld = function() {
 }
 
 /* ----------------------------------------------------------------------- */
-Game.drawPlayer = function(player) {
-    ctx.drawImage(sprite_sheet.image, p1.animate.frame * SPRITE_SIZE, 0, 45, 50,
-    p1.x, p1.y, canvas.width * 0.2, canvas.height * 0.4);
-    
-    ctx.drawImage(sprite_sheet.image, p2.animate.frame * SPRITE_SIZE, 0, 45, 50,
-    p2.x, p2.y, canvas.width * 0.2, canvas.height * 0.4);
+Game.drawPlayers = function(player) {
+    for(var x = 0; x < players.length; x++) {
+        var player = players[x];
+            ctx.drawImage(sprite_sheet.image, player.animate.frame * SPRITE_SIZE, 0, 45, 50,
+            canvas.width * player.x, canvas.height * player.y, canvas.width * player.width, canvas.height * player.height); 
+    }
 }
 
 /* --------------------------------------------------------------------- */
@@ -289,11 +300,14 @@ Game.drawUI = function(){
     var hp1 = p1.hp/10 * 0.1;
     var hp2 = p2.hp/10 * 0.1;
     
+/* ----------------------------------Health bars---------------------------------------- */
     ctx.fillStyle = "gray";
     ctx.fillRect(canvas.width * 0.05, canvas.height * 0.05, canvas.width * 0.4, canvas.height*0.05);
     ctx.fillStyle = "gray";
     ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4, canvas.height*0.05);
     
+    
+
     if(p1.hp >= 50) {
         ctx.fillStyle = "green";
         
@@ -323,22 +337,28 @@ Game.drawUI = function(){
         ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4 * hp2, canvas.height*0.05);
     }
     
-    ctx.font = (0.03 * canvas.height + "px Arial");
+    
+/* ---------------------------------- HP text---------------------------------------- */
+    ctx.font = (canvas.height * 0.03 + "px Arial");
     ctx.fillStyle = "black";
     ctx.fillText("HP: " + p2.hp,canvas.width * 0.71, canvas.height * 0.14);
     
-    ctx.font = (0.03 * canvas.height + "px Arial");
+    ctx.font = (canvas.height * 0.03 + "px Arial");
     ctx.fillStyle = "black";
     ctx.fillText("HP: " + p1.hp,canvas.width * 0.22, canvas.height * 0.14);
     
-    ctx.font = (0.05 * canvas.height + "px Arial");
-    ctx.fillStyle = "green";
-    ctx.fillText("P1", p1.x+154, p1.y);
     
-    ctx.font = (0.05 * canvas.height + "px Arial");
+    
+/* ------------------------------------ Player markers-------------------------------------- */
+    ctx.font = (canvas.height * 0.05 + "px Arial");
+    ctx.fillStyle = "green";
+    ctx.fillText("P1", canvas.width * p1.x + (canvas.width * 0.072) , canvas.height * p1.y);
+    
+    ctx.font = (canvas.height * 0.05 + "px Arial");
     ctx.fillStyle = "black";
-    ctx.fillText("P2", p2.x+154, p2.y);
+    ctx.fillText("P2", canvas.width * p2.x + (canvas.width * 0.072), p2.y + canvas.height * p2.y);
 }
+
 
 /* -------------------------------------------------------------------------- */
 Game.drawFPS = function(){
@@ -353,16 +373,14 @@ Game.initialize = function() {
     
     if (canvas && canvas.getContext) {
         ctx = canvas.getContext("2d");
-        canvas.width = Game.width;
-        canvas.height = Game.height;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
 };
 
 resize = function() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    Game.width = window.innerWidth;
-    Game.height = window.innerHeight;
 };
     
 window.addEventListener("resize", resize);
@@ -378,8 +396,6 @@ Game.update = function(tick) {
 
 /* -------------------------------------------------------------------------- */
 
-
-/* -------------------------------------------------------------------------- */
 Game.pause = function() {
    this.paused = (this.paused) ? false : true;
 };
@@ -401,39 +417,7 @@ Game.run = (function() {
 })();
 
 /* -------------------------------------------------------------------------- */
-function colCheck(shapeA, shapeB) {
-    // get the vectors to check against
-    var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
-        vY = (shapeA.y + (shapeA.height / 2)) - (shapeB.y + (shapeB.height / 2)),
-        // add the half widths and half heights of the objects
-        hWidths = (shapeA.width / 2) + (shapeB.width / 2),
-        hHeights = (shapeA.height / 2) + (shapeB.height / 2),
-        colDir = null;
 
-    if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {
-
-        var oX = hWidths - Math.abs(vX),
-            oY = hHeights - Math.abs(vY);
-        if (oX >= oY) {
-            if (vY > 0) {
-                colDir = "t";
-                shapeA.y += oY;
-            } else {
-                colDir = "b";
-                shapeA.y -= oY;
-            }
-        } else {
-            if (vX > 0) {
-                colDir = "l";
-                shapeA.x += oX;
-            } else {
-                colDir = "r";
-                shapeA.x -= oX;
-            }
-        }
-    }
-    return colDir;
-}
 
 /* -------------------------------------------------------------------------- */
 function colCheck(shapeA, shapeB) {
@@ -441,7 +425,7 @@ function colCheck(shapeA, shapeB) {
     var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
         vY = (shapeA.y + (shapeA.height / 2)) - (shapeB.y + (shapeB.height / 2)),
         // add the half widths and half heights of the objects
-        hWidths = (shapeA.width / 2) + (shapeB.width / 2),
+        hWidths = (shapeA.width / 4) + (shapeB.width / 4),
         hHeights = (shapeA.height / 2) + (shapeB.height / 2),
         colDir = null;
 
@@ -449,26 +433,28 @@ function colCheck(shapeA, shapeB) {
 
         var oX = hWidths - Math.abs(vX),
             oY = hHeights - Math.abs(vY);
+        
         if (oX >= oY) {
             if (vY > 0) {
                 colDir = "t";
-                shapeA.y += oY;
+                //shapeA.y += oY;
             } else {
                 colDir = "b";
-                shapeA.y -= oY;
+                //shapeA.y -= oY;
             }
         } else {
             if (vX > 0) {
                 colDir = "l";
-                shapeA.x += oX;
+                //shapeA.x += oX;
             } else {
                 colDir = "r";
-                shapeA.x -= oX;
+                //shapeA.x -= oX;
             }
         }
     }
     return colDir;
 }
+
 (function() {
     var onEachFrame;
     if (window.requestAnimationFrame) {
