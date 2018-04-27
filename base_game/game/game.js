@@ -129,9 +129,6 @@ document.addEventListener("keyup", function (e) {
         keys[e.keyCode] = false;
 });
 
-
-
-
 var punching;
 function punch() {
     if (!punching) {
@@ -422,11 +419,11 @@ Game.run = (function() {
 /* -------------------------------------------------------------------------- */
 function colCheck(shapeA, shapeB) {
     // get the vectors to check against
-    var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
-        vY = (shapeA.y + (shapeA.height / 2)) - (shapeB.y + (shapeB.height / 2)),
+    var vX = (shapeA.x + (shapeA.width / 4)) - (shapeB.x + (shapeB.width / 4)),
+        vY = (shapeA.y + (shapeA.height / 4)) - (shapeB.y + (shapeB.height / 4)),
         // add the half widths and half heights of the objects
         hWidths = (shapeA.width / 4) + (shapeB.width / 4),
-        hHeights = (shapeA.height / 2) + (shapeB.height / 2),
+        hHeights = (shapeA.height / 4) + (shapeB.height / 4),
         colDir = null;
 
     if (Math.abs(vX) < hWidths && Math.abs(vY) < hHeights) {

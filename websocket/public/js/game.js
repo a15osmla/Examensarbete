@@ -14,14 +14,15 @@ var action;
 var otherId;
 var sessionId;
 
-Game.width = window.innerWidth;
-Game.height = window.innerHeight;
 Game.fps = 60;
 Game.maxFrameSkip = 10;
 Game.skipTicks = 1000 / Game.fps;
 
 localStorage.clear();
 var storage = localStorage.setItem("ms", "");
+
+
+
 var interval;
 var testing;
 var gameStatus;
@@ -152,8 +153,8 @@ Game.drawWorld = function() {
 Game.drawPlayer = function() { 
     for(var x = 0; x < players.length; x++) {
         var player = players[x];
-        ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
-        player.x, player.y, canvas.width * 0.2, canvas.height * 0.4);
+         ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
+         canvas.width * player.x, canvas.height * player.y, canvas.width * player.width, canvas.height * player.height); 
     }
 }
 
@@ -186,10 +187,10 @@ Game.drawUI = function(){
             ctx.font = (0.03 * canvas.height + "px Arial");
             ctx.fillStyle = "black";
             ctx.fillText("HP: " + p1.hp,canvas.width * 0.22, canvas.height * 0.14);
-
-            ctx.font = (0.05 * canvas.height + "px Arial");
+            
+            ctx.font = (canvas.height * 0.05 + "px Arial");
             ctx.fillStyle = "green";
-            ctx.fillText("P1", p1.x+154, p1.y);
+            ctx.fillText("P1", canvas.width * p1.x + (canvas.width * 0.072) , canvas.height * p1.y);
            
         } else {
             var p2 = players[x];
@@ -215,9 +216,10 @@ Game.drawUI = function(){
             ctx.font = (0.03 * canvas.height + "px Arial");
             ctx.fillStyle = "black";
             ctx.fillText("HP: " + p2.hp,canvas.width * 0.71, canvas.height * 0.14);
-            ctx.font = (0.05 * canvas.height + "px Arial");
+            
+            ctx.font = (canvas.height * 0.05 + "px Arial");
             ctx.fillStyle = "black";
-            ctx.fillText("P2", p2.x+154, p2.y); 
+            ctx.fillText("P2", canvas.width * p2.x + (canvas.width * 0.072), p2.y + canvas.height * p2.y); 
             if(p1.hp <= 0 || p2.hp <= 0 ) {
                 gameStatus = "end";
             }
@@ -358,6 +360,16 @@ Game.update = function(tick) {
         Game.drawGFX();
     }
 }
+
+/* -------------------------------------------------------------------------- */
+
+resize = function() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+};
+    
+window.addEventListener("resize", resize);
+
 /* -------------------------------------------------------------------------- */
 Game.initialize = function() {
     sprite_sheet.image.src = "/img/spritesheet.png";
@@ -366,10 +378,65 @@ Game.initialize = function() {
     if (canvas && canvas.getContext) {
         animation = new Animation();
         ctx = canvas.getContext("2d");
-        canvas.width = Game.width;
-        canvas.height = Game.height;
-        
-        socket.on("connect", function(){
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+};
+
+/* -------------------------------------------------------------------------- */
+Game.run = (function() {
+    var loops = 0;
+    var nextGameTick = (new Date).getTime();
+    var startTime = (new Date).getTime();
+    
+    return function() {
+        loops = 0;
+        while (!Game.paused && (new Date).getTime() > nextGameTick && loops < Game.maxFrameSkip) {
+            Game.update(nextGameTick - startTime);
+            nextGameTick += Game.skipTicks;
+            loops++;
+        }
+    };
+})();
+
+/* -------------------------------------------------------------------------- */
+(function() {
+    var onEachFrame;
+    if (window.requestAnimationFrame) {
+       onEachFrame = function(cb) {
+          var _cb = function() {
+                cb();
+             requestAnimationFrame(_cb);
+          };
+          _cb();
+       };
+    } else if (window.webkitRequestAnimationFrame) {
+       onEachFrame = function(cb) {
+          var _cb = function() {
+             cb();
+             webkitRequestAnimationFrame(_cb);
+          };
+          _cb();
+       };
+    } else if (window.mozRequestAnimationFrame) {
+        onEachFrame = function(cb) {
+            var _cb = function() {
+                cb();
+                mozRequestAnimationFrame(_cb);
+            };
+            _cb();
+        };
+    } else {
+        onEachFrame = function(cb) {
+            setInterval(cb, Game.skipTicks);
+        };
+    }
+
+    window.onEachFrame = onEachFrame;
+})();
+
+
+ socket.on("connect", function(){
             sessionId = socket.io.engine.id;
         });
         
@@ -427,58 +494,3 @@ Game.initialize = function() {
             localStorage.setItem("ms", news);
             */
         });
-    
-    }
-};
-
-/* -------------------------------------------------------------------------- */
-Game.run = (function() {
-    var loops = 0;
-    var nextGameTick = (new Date).getTime();
-    var startTime = (new Date).getTime();
-    
-    return function() {
-        loops = 0;
-        while (!Game.paused && (new Date).getTime() > nextGameTick && loops < Game.maxFrameSkip) {
-            Game.update(nextGameTick - startTime);
-            nextGameTick += Game.skipTicks;
-            loops++;
-        }
-    };
-})();
-
-/* -------------------------------------------------------------------------- */
-(function() {
-    var onEachFrame;
-    if (window.requestAnimationFrame) {
-       onEachFrame = function(cb) {
-          var _cb = function() {
-                cb();
-             requestAnimationFrame(_cb);
-          };
-          _cb();
-       };
-    } else if (window.webkitRequestAnimationFrame) {
-       onEachFrame = function(cb) {
-          var _cb = function() {
-             cb();
-             webkitRequestAnimationFrame(_cb);
-          };
-          _cb();
-       };
-    } else if (window.mozRequestAnimationFrame) {
-        onEachFrame = function(cb) {
-            var _cb = function() {
-                cb();
-                mozRequestAnimationFrame(_cb);
-            };
-            _cb();
-        };
-    } else {
-        onEachFrame = function(cb) {
-            setInterval(cb, Game.skipTicks);
-        };
-    }
-
-    window.onEachFrame = onEachFrame;
-})();

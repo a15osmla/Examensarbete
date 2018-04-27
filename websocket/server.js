@@ -19,13 +19,14 @@ function Player(x, y, width, height, speed, id, p, index, dir) {
     this.width = width;
     this.height = height;
     this.speed = speed;
+    this.orgSpeed = speed;
     this.grounded = true;
     this.jumping = false;
     this.blocking = false;
     this.velY = 0;
     this.velX = 0;
     this.startY = y;
-    this.gravity = 2;
+    this.gravity = speed / 2;
     this.hp = 100;
     this.dir = dir;
 }
@@ -45,9 +46,13 @@ io.sockets.on('connection', function(socket) {
     
     // Add a new player object for every connection (Player) 
     if(players.length % 2 == 0) {
-        players.push(new Player(100,450,100,100,5, socket.id, "p1", players.length, "right")); 
+        // var p1 = new Player(0.01, 0.6, 0.15, 0.35, 0.004);
+        //players.push(new Player(100,450,100,100,5, socket.id, "p1", players.length, "right")); 
+        players.push(new Player(0.01,0.6,0.15, 0.35, 0.004, socket.id, "p1", players.length, "right")); 
     } else {
-        players.push(new Player(1200,450,100,100,5, socket.id, "p2", players.length, "left"));  
+        //players.push(new Player(1200,450,100,100,5, socket.id, "p2", players.length, "left"));  
+        players.push(new Player(0.89, 0.6, 0.15, 0.35, 0.004, socket.id, "p2", players.length, "left"));  
+        //var p2 = new Player(0.80, 0.6, 0.15, 0.35, 0.004);
     }
 
     msg = {players: players};
@@ -143,7 +148,7 @@ io.sockets.on('connection', function(socket) {
                     if (!player.jumping && player.grounded) {
                         player.jumping = true;
                         player.grounded = false;
-                        player.velY = -player.speed * 5;         
+                        player.velY = -player.speed * 6;         
                     } 
                     
                     if(player.jumping) {
@@ -161,25 +166,26 @@ io.sockets.on('connection', function(socket) {
                     
                     msg = { players: players,time:clientTime};
                     io.sockets.emit('players', JSON.stringify(msg));
-                }, 15);
+                }, 16);
                
                 
         }
+
         if(canvas) {
-            if(player.x >= canvas - 250){    
+            if(canvas * player.x >= canvas * 0.90){    
                 if(lastDir == "right") {
                     player.speed = 0 ;
                 } else {
-                    player.speed = 5;
+                    player.speed = player.orgSpeed;
                 }
                 io.sockets.emit('players', JSON.stringify(msg));
         }
     
-        if (player.x <= -150 ){
+        if (canvas * player.x <= canvas * -0.07 ){
                 if(lastDir == "left") {
                     player. speed = 0 ;
                 } else {
-                    player.speed = 5;
+                    player.speed = player.orgSpeed;
                 }
                 io.sockets.emit('players', JSON.stringify(msg));
             }
@@ -223,11 +229,11 @@ server.listen(process.env.PORT || 1337);
 
 function colCheck(shapeA, shapeB) {
     // get the vectors to check against
-    var vX = (shapeA.x + (shapeA.width / 2)) - (shapeB.x + (shapeB.width / 2)),
-        vY = (shapeA.y + (shapeA.height / 2)) - (shapeB.y + (shapeB.height / 2)),
+    var vX = (shapeA.x + (shapeA.width / 4)) - (shapeB.x + (shapeB.width / 4)),
+        vY = (shapeA.y + (shapeA.height / 4)) - (shapeB.y + (shapeB.height / 4)),
         // add the half widths and half heights of the objects
-        hWidths = (shapeA.width / 2) + (shapeB.width / 2),
-        hHeights = (shapeA.height / 2) + (shapeB.height / 2),
+        hWidths = (shapeA.width / 4) + (shapeB.width / 4),
+        hHeights = (shapeA.height / 4) + (shapeB.height / 4),
         colDir = null;
 
     
