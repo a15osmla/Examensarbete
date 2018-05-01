@@ -10,6 +10,7 @@ var lastDir;
 var set;
 var index;
 var players = [];
+var animations = [];
 var action;
 var otherId;
 var sessionId;
@@ -20,8 +21,6 @@ Game.skipTicks = 1000 / Game.fps;
 
 localStorage.clear();
 var storage = localStorage.setItem("ms", "");
-
-
 
 var interval;
 var testing;
@@ -151,10 +150,81 @@ Game.drawWorld = function() {
 }
 
 Game.drawPlayer = function() { 
+    ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
+        canvas.width * player.x, canvas.height * player.y, canvas.width * player.width, canvas.height * player.height); 
     for(var x = 0; x < players.length; x++) {
-        var player = players[x];
-         ctx.drawImage(sprite_sheet.image, animation.frame * SPRITE_SIZE, 0, 45, 50,
-         canvas.width * player.x, canvas.height * player.y, canvas.width * player.width, canvas.height * player.height); 
+        var playerz = players[x];
+        if(playerz.pid != socket.id) {
+            ctx.drawImage(sprite_sheet.image, animations[x].frame * SPRITE_SIZE, 0, 45, 50,
+            canvas.width * playerz.x, canvas.height * playerz.y, canvas.width * playerz.width, canvas.height * playerz.height);
+
+
+            var lastDir = playerz.dir;
+            var actionz = playerz.action;
+            console.log(actionz);
+
+            if(actionz == null) {
+                animations[x].change(set[8], 15);
+            }
+
+            if (actionz == "block") {
+               if(lastDir == "left") {
+                    animations[x].change(set[8], 15);
+                } else {
+                    animations[x].change(set[3], 15);
+                }
+            }
+
+            // Punch - space
+            else if(actionz == "punch"){
+
+                if(lastDir == "left") {
+                    animations[x].change(set[7], 15); 
+                } else {
+                    animations[x].change(set[4], 15);
+                }
+            }
+
+            // Move right - d   
+            else if(actionz == "right") {
+                animations[x].change(set[1], 15);
+                if (action == "jump") {
+                    if(lastDir == "left") {
+                        animations[x].change(set[9], 8);  
+                    } else {
+                        animations[x].change(set[2], 8);  
+                    } 
+                }
+            } 
+
+            // Move left - a
+            else if (actionz == "left") {
+                animations[x].change(set[6], 15);
+                if (actionz == "jump") {
+                    if(lastDir == "left") {
+                        animations[x].change(set[9], 8);  
+                    } else {
+                        animations[x].change(set[2], 8);  
+                    } 
+                } 
+            } 
+
+            else if (actionz == "jump") {
+                if(lastDir == "left") {
+                    animations[x].change(set[9], 8); 
+                } else {
+                    animations[x].change(set[2], 8);  
+                } 
+            }
+            else{ 
+                if(lastDir == "left") {
+                    animations[x].change(set[5], 15);   
+                } else {
+                    animations[x].change(set[0], 15);
+                }    
+            }
+        }
+        
     }
 }
 
@@ -272,7 +342,7 @@ Game.input = function() {
     
     if(set) {
         // Block - shift
-        if (keys[16] || action == "block") {
+        if (keys[16]) {
            if(lastDir == "left") {
                 animation.change(set[8], 15);
             } else {
@@ -283,7 +353,7 @@ Game.input = function() {
         }
         
         // Punch - space
-        else if(keys[32] || action == "punch"){
+        else if(keys[32]){
             if(lastDir == "left") {
                 animation.change(set[7], 15); 
             } else {
@@ -294,7 +364,7 @@ Game.input = function() {
         }
         
         // Move right - d   
-        else if(keys[68] || action == "right") {
+        else if(keys[68]) {
             animation.change(set[1], 15);
             lastDir = "right";
             var msg = {action: "right", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
@@ -311,7 +381,7 @@ Game.input = function() {
         } 
 
         // Move left - a
-        else if (keys[65] || action == "left") {
+        else if (keys[65]) {
             animation.change(set[6], 15);
             lastDir = "left";
             var msg = {action: "left", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};     
@@ -328,7 +398,7 @@ Game.input = function() {
             } 
         } 
         
-        else if (keys[87] || action == "jump") {
+        else if (keys[87]) {
             jump();
             if(lastDir == "left") {
                 animation.change(set[9], 8); 
@@ -345,7 +415,10 @@ Game.input = function() {
             }    
         }
     }
-    animation.update(); 
+    animation.update();
+    for(var x = 0; x < animations.length; x++) {
+        animations[x].update;
+    }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -458,20 +531,18 @@ Game.run = (function() {
             }
             
         });
-        
-        
 
         socket.on("players", function(data) {
             var parsedData = JSON.parse(data);
             players = parsedData.players;
             
             for(var x = 0; x < players.length; x++) {
-                var sid = socket.io.engine.id;
+                var sid = socket.id;
                 if(players[x].pid != sid ) {
                     otherId = players[x].pid;
                     index = player.index; 
+                    animations.push(new Animation());
                 } 
-                
                 if(players[x].pid == sid ) {
                     player = players[x];
                     index = player.index;  

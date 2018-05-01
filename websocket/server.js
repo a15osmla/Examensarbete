@@ -29,6 +29,7 @@ function Player(x, y, width, height, speed, id, p, index, dir) {
     this.gravity = speed / 2;
     this.hp = 100;
     this.dir = dir;
+    this.action = "idle";
 }
 
 app.use(bodyParser.json());
@@ -102,18 +103,22 @@ io.sockets.on('connection', function(socket) {
             else if (action == "left") {
                 player.x -= player.speed;
                 player.dir = lastDir;
+                player.action = "left";
                 msg = { players: players,time:clientTime};
                 io.sockets.emit('players', JSON.stringify(msg));
             } else if (data.action == "right") {
                 player.x += player.speed;
                 player.dir = lastDir;
+                player.action = "right";
                 msg = { players: players,time:clientTime};
                 io.sockets.emit('players', JSON.stringify(msg));
             } else if (data.action == "block") {
                 player.blocking = true;
+                player.action = "block";
                 io.sockets.emit('players', JSON.stringify(msg));
                 player.blocking = false;
             } else if (data.action == "punch") {
+                player.action = "punch";
                 for(var x = 0; x < players.length; x++) {
                     if(index != players[x].index) {
                         player2 = players[x];
@@ -148,7 +153,8 @@ io.sockets.on('connection', function(socket) {
                     if (!player.jumping && player.grounded) {
                         player.jumping = true;
                         player.grounded = false;
-                        player.velY = -player.speed * 6;         
+                        player.velY = -player.speed * 6;
+                        player.action = "jump";
                     } 
                     
                     if(player.jumping) {
@@ -161,15 +167,16 @@ io.sockets.on('connection', function(socket) {
                         player.jumping = false;
                         player.grounded = true;
                         player.velY = 0;
-                        clearInterval(interval);    
+                        clearInterval(interval);
+                        player.action = "idle";
                     }
                     
                     msg = { players: players,time:clientTime};
                     io.sockets.emit('players', JSON.stringify(msg));
                 }, 16);
                
-                
         }
+        
 
         if(canvas) {
             if(canvas * player.x >= canvas * 0.90){    
@@ -220,7 +227,7 @@ io.sockets.on('connection', function(socket) {
     }); 
 });
 
-server.listen(process.env.PORT || 1337);
+server.listen(process.env.PORT || 1338);
 
 /* -------------------------------------------------------------------------- */
 
