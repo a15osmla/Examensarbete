@@ -74,7 +74,7 @@ io.sockets.on('connection', function(socket) {
             var player2;
             var cCheck;
             
-            
+            if(player) {
             // Recieved action from client and the index of their respective player object
             if(action == "test") {
                 if(players.length >= 2) {
@@ -123,8 +123,7 @@ io.sockets.on('connection', function(socket) {
                     if(index != players[x].index) {
                         player2 = players[x];
                     }
-                }
-                
+                }    
                 if(player2) {
                     var cCheck = colCheck(player, player2);
                     if (cCheck == "l" || cCheck == "r") {
@@ -176,7 +175,6 @@ io.sockets.on('connection', function(socket) {
                 }, 16);
                
         }
-        
 
         if(canvas) {
             if(canvas * player.x >= canvas * 0.90){    
@@ -196,7 +194,8 @@ io.sockets.on('connection', function(socket) {
                 }
                 io.sockets.emit('players', JSON.stringify(msg));
             }
-        }                                           
+        }
+            }
     });
     
 //------------------------------------------------------------ Disconnect ------------------------------------
