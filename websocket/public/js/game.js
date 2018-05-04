@@ -264,13 +264,13 @@ Game.drawUI = function(){
                     ctx.fillRect(canvas.width * 0.05, canvas.height * 0.05, canvas.width * 0.4 * hp1, canvas.height*0.05);
                 }
 
-                ctx.font = (0.03 * canvas.height + "px Arial");
+                ctx.font = ((canvas.width * 0.015) + "px Arial");
                 ctx.fillStyle = "black";
                 ctx.fillText("HP: " + p1.hp,canvas.width * 0.22, canvas.height * 0.14);
 
-                ctx.font = (canvas.height * 0.05 + "px Arial");
+                ctx.font = ((canvas.width * 0.015) + "px Arial");
                 ctx.fillStyle = "green";
-                ctx.fillText("P" + (x + 1), canvas.width * p1.x + (canvas.width * 0.072) , canvas.height * p1.y);
+                ctx.fillText("P" + (x + 1), canvas.width * p1.x + (canvas.width * 0.072) , canvas.height * p1.y + (-canvas.height * 0.025));
 
             } else {
                 var p2 = players[x];
@@ -293,21 +293,20 @@ Game.drawUI = function(){
                     ctx.fillRect(canvas.width * 0.55, canvas.height * 0.05, canvas.width * 0.4 * hp2, canvas.height*0.05);
                 }
 
-                ctx.font = (0.03 * canvas.height + "px Arial");
+                ctx.font = ((canvas.width * 0.015) + "px Arial");
                 ctx.fillStyle = "black";
                 ctx.fillText("HP: " + p2.hp,canvas.width * 0.71, canvas.height * 0.14);
 
-                ctx.font = (canvas.height * 0.05 + "px Arial");
+                ctx.font = ((canvas.width * 0.015) + "px Arial");
                 ctx.fillStyle = "black";
-                ctx.fillText("P" + (x + 1), canvas.width * p2.x + (canvas.width * 0.072), p2.y + canvas.height * p2.y); 
-                /*if(p1.hp <= 0 || p2.hp <= 0 ) {
+                ctx.fillText("P" + (x + 1), canvas.width * p2.x + (canvas.width * 0.072) , canvas.height * p2.y + (-canvas.height * 0.025));
+                if(p1.hp <= 0 || p2.hp <= 0 ) {
                     gameStatus = "end";
-                }*/
+                }
             }
-                
                 ctx.fillStyle = "green";
-                ctx.fillRect(canvas.width * players[x].x, players[x].y + canvas.height * players[x].y,
-                             canvas.width * (players[x].hp / 1000), canvas.height * 0.010);
+                ctx.fillRect(canvas.width * players[x].x + (canvas.width * 0.032), canvas.height * players[x].y,
+                             canvas.width * (players[x].hp / 1000), canvas.height * 0.01);
     }
 }
 
@@ -442,7 +441,6 @@ Game.update = function(tick) {
         Game.tick = tick; 
         Game.drawGFX();
         Game.input();
-        
     }
 }
 
