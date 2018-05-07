@@ -47,14 +47,12 @@ io.sockets.on('connection', function(socket) {
     
     // Add a new player object for every connection (Player) 
     if(players.length % 2 == 0) {
-        // var p1 = new Player(0.01, 0.6, 0.15, 0.35, 0.004);
-        //players.push(new Player(100,450,100,100,5, socket.id, "p1", players.length, "right")); 
-        players.push(new Player(0.01,0.6,0.15, 0.35, 0.004, socket.id, "p1", players.length, "right")); 
+       // players.push(new Player(0.01,0.6,0.15, 0.35, 0.004, socket.id, "p1", players.length, "right")); 
+        players.push(new Player(0.1 ,0.4,0.25, 0.55, 0.004, socket.id, "p1", players.length, "right")); 
     } else {
-        //players.push(new Player(1200,450,100,100,5, socket.id, "p2", players.length, "left"));  
-        players.push(new Player(0.89, 0.6, 0.15, 0.35, 0.004, socket.id, "p2", players.length, "left"));  
-        //var p2 = new Player(0.80, 0.6, 0.15, 0.35, 0.004);
-    }
+        //players.push(new Player(0.89, 0.6, 0.15, 0.35, 0.004, socket.id, "p2", players.length, "left"));  
+        players.push(new Player(0.1 ,0.4,0.25, 0.55, 0.004, socket.id, "p2", players.length, "right"));
+    }   
 
     msg = {players: players};
     io.sockets.emit('players', JSON.stringify(msg));
@@ -226,7 +224,7 @@ io.sockets.on('connection', function(socket) {
     }); 
 });
 
-server.listen(process.env.PORT || 1338);
+server.listen(process.env.PORT || 1337);
 
 /* -------------------------------------------------------------------------- */
 

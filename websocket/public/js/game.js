@@ -301,7 +301,7 @@ Game.drawUI = function(){
                 ctx.fillStyle = "black";
                 ctx.fillText("P" + (x + 1), canvas.width * p2.x + (canvas.width * 0.072) , canvas.height * p2.y + (-canvas.height * 0.025));
                 if(p1.hp <= 0 || p2.hp <= 0 ) {
-                    gameStatus = "end";
+                    //gameStatus = "end";
                 }
             }
                 ctx.fillStyle = "green";
@@ -331,7 +331,56 @@ function punch() {
     }
 }
 
+function handleStart(evt) {
+    evt.preventDefault();
+    switch(evt.target.id) {
+        case "right":
+            action = "right";    
+        break;
+        case "up":
+            action = "jump";    
+        break;
+        case "left":
+            action = "left";    
+        break;
+        case "punch":
+            action = "punch";    
+        break;
+        case "block":
+            action = "block";    
+        break;
+    }
+}
+
+function handleEnd(evt) {
+    action = null;
+}
+
+var r = document.getElementById("right");
+var u = document.getElementById("up");
+var l = document.getElementById("left");
+var p = document.getElementById("punch");
+var b = document.getElementById("block");
+
 Game.input = function() {
+  
+    r.addEventListener("touchend", handleEnd, false);
+    r.addEventListener("touchmove", handlestart, false);
+    
+    u.addEventListener("touchstart", handleStart, false);
+    u.addEventListener("touchend", handleEnd, false);
+    
+    l.addEventListener("touchstart", handleStart, false);
+    l.addEventListener("touchend", handleEnd, false);
+    
+    p.addEventListener("touchstart", handleStart, false);
+    p.addEventListener("touchend", handleEnd, false);
+    
+    
+    b.addEventListener("touchstart", handleStart, false);
+    b.addEventListener("touchend", handleEnd, false);
+    
+    
     /*
     canvas.addEventListener('click', function() {
         if(players.length >= 1) {
@@ -356,7 +405,7 @@ Game.input = function() {
     
     if(set) {
         // Block - shift
-        if (keys[16]) {
+        if (keys[16] || action == "block" ) {
            if(lastDir == "left") {
                 animation.change(set[8], 15);
             } else {
@@ -367,7 +416,7 @@ Game.input = function() {
         }
         
         // Punch - space
-        else if(keys[32]){
+        else if(keys[32] || action == "punch"){
             if(lastDir == "left") {
                 animation.change(set[7], 15); 
             } else {
@@ -377,7 +426,7 @@ Game.input = function() {
         }
         
         // Move right - d   
-        else if(keys[68]) {
+        else if(keys[68] || action == "right") {
             animation.change(set[1], 15);
             lastDir = "right";
             var msg = {action: "right", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};
@@ -394,7 +443,7 @@ Game.input = function() {
         } 
 
         // Move left - a
-        else if (keys[65]) {
+        else if (keys[65] || action == "left") {
             animation.change(set[6], 15);
             lastDir = "left";
             var msg = {action: "left", index: index, dir:lastDir, canvas:canvas.width, time:new Date().getTime()};     
@@ -410,7 +459,7 @@ Game.input = function() {
             } 
         } 
         
-        else if (keys[87]) {
+        else if (keys[87] || action == "jump") {
             jump();
             if(lastDir == "left") {
                 animation.change(set[9], 8); 
@@ -443,7 +492,7 @@ Game.update = function(tick) {
         Game.input();
     }
 }
-
+    
 /* -------------------------------------------------------------------------- */
 
 resize = function() {
