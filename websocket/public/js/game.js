@@ -365,7 +365,7 @@ var b = document.getElementById("block");
 Game.input = function() {
   
     r.addEventListener("touchend", handleEnd, false);
-    r.addEventListener("touchmove", handlestart, false);
+    r.addEventListener("touchmove", handleStart, false);
     
     u.addEventListener("touchstart", handleStart, false);
     u.addEventListener("touchend", handleEnd, false);
@@ -423,6 +423,7 @@ Game.input = function() {
                 animation.change(set[4], 15);
             }
             punch();
+            console.log("sd");
         }
         
         // Move right - d   
@@ -574,7 +575,7 @@ Game.run = (function() {
         
         socket.on("ping", function(dataz) {
             var parsedData = JSON.parse(dataz);
-            var msg = {action:"pong", start: parsedData.start, testdata: parsedData.testdata,  id:otherId};
+            var msg = {action:"pong", start: parsedData.start, testdata: parsedData.testdata, idd:otherId};
             socket.emit("message", JSON.stringify(msg));
         });
         
@@ -588,7 +589,6 @@ Game.run = (function() {
                 var news = old + ms + "\n";
                 localStorage.setItem("ms", news);
             }
-            
         });
 
         socket.on("players", function(data) {
