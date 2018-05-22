@@ -1,41 +1,190 @@
-var testdata = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.luptatibus maiores alias consequatur aut p praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desireAt vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.luptatibus maiores alias consequatur aut p praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desireAt vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.luptatibus maiores alias consequatur aut p praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desireAt vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains.luptatibus maiores alias consequatur aut p praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desireAt vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut .luptatibus maiores alias consequatur aut p praesentium voluptatum delenitipraesentium voluptatum delenitipraesentium vpraesentium voluptatum delenitipraesentium voluptatum delenitioluptatum delenitipraesentium volupsatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voOn the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire";
+var testdata = "rtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwertrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqweqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwwqwewqwertqwertqwerqwertrtwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
 
-
+// 1 kb
+var serverData = "rtqwertqwertqwertqwertqwertqwertqwerqwertrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqweqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqweewqewqqqwertqwertqwertrrtqwertqrtqwertqwertqwertqwertqwertqwertrrtqwertqrtqwertqwertqwertrrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwertrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwerttqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwertwwqwewqwertqwertqwerqwertrtwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
+//testdata = "212312331231212312123123321231233123123123121212312123123321231233123121231212312332";
+localStorage.clear();
 var socket = io.connect();
 var peerConn;
-var config = {
-	'iceServers': [{'url': 'stun:stun.1und1.de'},
-                   //url:'stun:stun1.l.google.com:19302'},
-                  ]
-};
-
-localStorage.clear();
-var testdata2 = "wqeewq wqeweqwe wqweqew wqwweqwq";
 var storage = localStorage.setItem("ms ", " ");
-var dataChannelOptions = {
-	ordered: false, //no guaranteed delivery, unreliable but faster 
-	maxRetransmitTime: 5, //milliseconds
-};
 var dataChannel;
 var sessionId;
-var otherId;
 var testing;
 var pongTime;
 var pingTime;
 var latency;
+var host;
+var peers =     [];
+var peerConnections = [];
+var dataChannels = [];
+var start;
+var hostId;
+var dataChannelOptions = {
+	ordered: false, //no guaranteed delivery, unreliable but faster 
+	maxRetransmitTime: 1000, //milliseconds
+};
+var config = {
+	'iceServers': [{'url': 'stun:stun.1und1.de'},
+                   //url:'stun:stun1.l.google.com:19302'},
+    ]
+};
 
+//------------------------------------------------- TEST --------------------------------------------------------------
 
+var pingTest = false;
+function startPingTest() {
+  if (!pingTest) {
+      pingTest = true;
+      var interval = setInterval(function(){
+          var msg = {type:"pingServer", ping:Date.now(), data:testdata};
+          dataChannel.send(JSON.stringify(msg)); 
+    }, 1000/60);
+  }
+}
 
-pingTime = Date.now();
-function startTest() {
-  if (!testing) {
-    testing = true;
-     var interval = setInterval(function(){
-        var msg = {type:"ping", testdata:testdata2, ping:Date.now()};
+var dataTest = false;
+function startDataTest() {
+    if (!dataTest) {
+        dataTest = true;
+        var interval = setInterval(function(){
+        var msg = {type:"sendDataTest", test:testdata};
         dataChannel.send(JSON.stringify(msg)); 
     }, 1000/60);
-    setTimeout(function(){ testing = false;}, 500);
   }
+}
+
+var hosting = false;
+var starter = false;
+
+var hostButton = document.getElementById("host");
+hostButton.addEventListener("click", function () {
+    host = sessionId;
+    if(hosting == false) {
+        hostButton.innerHTML = "You are the host";
+        hosting = true;
+        createPeerConns();
+        createDataChannels();
+    }
+})
+    
+var startButton = document.getElementById("start");
+startButton.addEventListener("click", function () {        
+    if(starter == false) {
+        startButton.style.display="none";
+        send({type:"host", session:sessionId});
+        //sendIceCandidates();
+    }
+});
+
+var testButton = document.getElementById("test");
+testButton.addEventListener("click", function () {        
+    if(starter == false) {
+        startButton.style.display="none";
+        sendTests();
+        //sendToAllPeers(msg);
+        //sendIceCandidates();
+    }
+});
+var serverTesting = false;
+function serverTest() {
+    if (!serverTesting) {
+        serverTesting = true;
+        var interval = setInterval(function(){
+        var msg = {type:"recieveData", data:serverData};
+        sendToAllPeers(msg);
+    }, 1000/60);
+  }
+}
+
+function sendTests() {
+    if (!testing) {
+        testing = true;
+        var msg = {type:"pingTest"}
+        dataChannels[0].send(JSON.stringify(msg));
+        //serverTest();
+        //msg = {type:"dataTest"};
+        //sendToAllPeers(msg);
+    }
+}
+
+//----------------------------------------------- Datachannels -------------------------------------------------------
+
+function createDataChannels(){
+    for(var x = 0; x < peerConnections.length; x++) {
+        dataChannels.push(peerConnections[x].createDataChannel("channel" + [x], dataChannelOptions));
+    }
+    for(var x = 0; x < dataChannels.length; x++) {
+        dataChannels[x].onopen = dataChannelStateChanged;
+        dataChannels[x].ondatachannel = receiveDataChannel;
+    }
+}
+ /*       
+function sendIceCandidates() {
+    for(var x = 0; x < peerConnections.length; x++) {
+        var idier = peers[x];
+        peerConnections[x].onicecandidate = function (event) { 
+            if (event.candidate) { 
+                send({ type: "candidate", candidate: event.candidate, session:idier});
+            }
+        };
+        console.log(peerConnections[x]);
+    }
+}
+*/
+
+/*
+function sendOffers(index) {
+    var x = index;
+    var ids = peers[x];
+
+    peerConnections[x].createOffer(function (offer) { 
+        peerConnections[x].setLocalDescription(offer); 
+        send({ type: "offer", offer: offer, session: ids, host: host, index:x});
+    }, function (error) {
+    });
+}
+*/
+
+function createPlayers(){
+    for(var x = 0; x < peers.length; x++) {
+        players.push(new Player(0.01, 0.6, 0.15, 0.35, 0.004, peers[x]));
+    }
+}
+
+function createPeerConns() {
+    if(hosting == true && host == sessionId) {
+        for(var x = 0; x < peers.length; x++) { 
+            peerConnections.push(new RTCPeerConnection(config, null));
+            //sendOffers(x);
+            if(x < peers.length) {
+                start = false; 
+            }
+        }
+    }
+}
+
+function setupConn() {
+    if(!host) {
+        peerConn = new RTCPeerConnection(config, null); 
+        dataChannel = peerConn.createDataChannel('textMessages', dataChannelOptions);
+        dataChannel.onopen = dataChannelStateChanged;
+        peerConn.ondatachannel = receiveDataChannel;
+        peerConn.onicecandidate = function (event) { 
+            if (event.candidate) { 
+                send({ 
+                   type: "candidate", 
+                   candidate: event.candidate, 
+                   session:hostId, peer:sessionId
+                });
+             } 
+        }; 
+        
+        peerConn.createOffer(function (offer) { 
+            send({ type: "offer", offer: offer, session: hostId, peer:sessionId}); 
+            peerConn.setLocalDescription(offer); 
+        }, function (error) { 
+            }); 
+    }
 }
 
 socket.on('connect', function(data) {
@@ -44,159 +193,249 @@ socket.on('connect', function(data) {
     
     socket.on('users', function(datar) {
         var data = JSON.parse(datar);
-        var array = (data.users);
+        var array = data.users;
+        peers.length = 0;
+
         for(var x = 0; x < array.length; x++) {
             if(sessionId != array[x]) {
-               otherId = array[x];
+                peers.push(array[x]);
+                console.log(peers);
             }
         }
-        
-        /*
-        if(data) {
-            serverTimer = data.time;
-            console.log(serverTimer);
-            
-            if(!serverTime) {
-                  var servertimerer = setInterval(function(){ 
-                    serverTimer += 1000;
-                    serverTime = new Date(serverTimer);
-                    console.log(serverTime);
-                }, 1000);
-            }
-        } )*/
     });
- 
-    peerConn = new RTCPeerConnection(config, null);
-    dataChannel = peerConn.createDataChannel('textMessages', dataChannelOptions);  
-        
-    dataChannel.onopen = dataChannelStateChanged;
-    peerConn.ondatachannel = receiveDataChannel;
-    
-    socket.on('connectedfirst', function(data){ 
-        peerConn.onicecandidate = function (event) { 
-        if (event.candidate) { 
-            send({ 
-               type: "candidate", 
-               candidate: event.candidate, 
-               session:otherId
-            });
-         } 
-        }; 
-       
-        
-        if(data == sessionId) {
-          peerConn.createOffer(function (offer) { 
-             send({ type: "offer", offer: offer, session: otherId}); 
-             peerConn.setLocalDescription(offer); 
-          }, function (error) { 
-          }); 
-        }
-        
-    }); 
 });
+
 
 socket.on('message', function(message) {
     var data = JSON.parse(message); 
     switch(data.type) { 
-      case "offer": 
-         onOffer(data.offer, data.session); 
-         break; 
-      case "answer":
-         onAnswer(data.answer); 
-         break; 
-      case "candidate":
-         onCandidate(data.candidate); 
-         break; 
-      default: 
-         break; 
+        case "host":
+            if(sessionId != data.host){
+                hostId = data.host;
+                setupConn();
+                startButton.style.display="none";
+                testButton.style.display="none";
+                hostButton.style.display="none";
+                
+            }
+            break;
+        case "offer":    
+            if(host) {
+                onOffer(data.offer, data.peer);
+            }
+            break; 
+        case "answer":
+            onAnswer(data.answer, data.index);
+            break; 
+        case "candidate":
+            onCandidate(data.candidate, data.peer); 
+            break; 
+        default: 
+            break; 
    } 
 });
 
+function createAnswer(index, peerId) {
+    peerConnections[index].createAnswer(function (answer) { 
+        peerConnections[index].setLocalDescription(answer); 
+        send({ type: "answer", answer: answer,session: peerId}); 
+    }, function (error) { alert("oops...error"); }); 
+}
+
 //when somebody wants to call us 
-function onOffer(offer, sessionId) { 
-    console.log(offer);
-    connectedUser = name; 
-    peerConn.setRemoteDescription(new RTCSessionDescription(offer), function() {
-        console.log(peerConn);
-   },  console.error.bind(console));
-	
-    peerConn.createAnswer(function (answer) { 
-    peerConn.setLocalDescription(answer); 
-		
-        send({ 
-         type: "answer", 
-         answer: answer,
-         session: otherId
-      }); 
-		
-   }, function (error) { 
-      alert("oops...error"); 
-   }); 
+function onOffer(offer, peerId) {
+    if(host) {
+      for(var x = 0; x < peers.length; x++) {
+            if(peerId == peers[x]) {
+                peerConnections[x].setRemoteDescription(new RTCSessionDescription(offer), function() {
+                },  console.error.bind(console));
+                createAnswer(x, peerId);
+            }
+        }  
+    } else {
+        peerConn.setRemoteDescription(new RTCSessionDescription(offer), function() {
+        },  console.error.bind(console));
+        
+        peerConn.createAnswer(function (answer) { 
+            peerConn.setLocalDescription(answer); 
+            send({ type: "answer", answer: answer,session: hostId,index: index}); 
+        }, function (error) { 
+              alert("oops...error"); 
+        }); 
+    }
 }
 
 //when another user answers to our offer 
-function onAnswer(answer) {
-    peerConn.setRemoteDescription(new RTCSessionDescription(answer), function() {
-       console.log(peerConn);
+function onAnswer(answer, index) {
+   peerConn.setRemoteDescription(new RTCSessionDescription(answer), function() {
    },  console.error.bind(console));
 }
 
 function send(message) {
-    //socket.emit("message", message);
     socket.emit("message", (JSON.stringify(message)));
     console.log("sending to server," +  JSON.stringify(message));
 }
 
 //when we got ice candidate from another user 
-function onCandidate(candidate) { 
-    peerConn.addIceCandidate(new RTCIceCandidate(candidate));
-    console.log(peerConn);
+function onCandidate(candidate, peerId) { 
+    if(host) {
+        for(var x = 0; x < peers.length; x++) {
+            if(peerId == peers[x]) {
+                peerConnections[x].addIceCandidate(new RTCIceCandidate(candidate));
+                console.log(peerConnections);
+            }
+        }
+    } else {
+      peerConn.addIceCandidate(new RTCIceCandidate(candidate));  
+    }
 }
+
 
 //Data Channel Specific methods
 function dataChannelStateChanged(event) {
-	if (dataChannel.readyState === 'open') {
-        socket.disconnect();
-		dataChannel.onmessage = receiveDataChannelMessage;
-	}
-}
-
-function receiveDataChannelMessage(event) {
-    var parsedData = JSON.parse(event.data);
-    
-    if(parsedData.type == "ping") {
-        var msg = {type:"pong", test:testdata2, ping:parsedData.ping};
-        dataChannel.send(JSON.stringify(msg));
+    var channelLabel = event.currentTarget.label;
+    if(host) {
+        for(var x = 0; x < dataChannels.length; x++) {
+            if (dataChannels[x].readyState === 'open') {
+                dataChannels[x].onmessage = receiveDataChannelMessage;
+                if(x <= dataChannels.length) {
+               
+                }
+            }
+        }
     }
-    
-    if(parsedData.type == "pong") {
-        pingTime = parsedData.ping;
-        pongTime = Date.now();
-        ms = (pongTime - pingTime) / 2;
-        console.log(ms);
-        var old = localStorage.getItem("ms");
-        var news = old + ms + "\n";
-        localStorage.setItem("ms", news);
+    else {
+        if (dataChannel.readyState === 'open') {
+            dataChannel.onmessage = receiveDataChannelMessage;
+	   }
     }
-    
-    /*
-    var s = parseInt(parsedData.start);
-    var n = Date.now();
-    console.log("S: " + s + " N: " + n);
-    //var ms = Math.abs(n - s) ;
-    var ms = n - s;
-    
- 
-     console.log(ms);
-    
-   ;
-    */
 }
 
 function receiveDataChannel(event) {
-	dataChannel = event.channel;
-	dataChannel.onmessage = receiveDataChannelMessage;
+    if(host) {
+        for(var x = 0; x < dataChannels.length; x++) {
+            dataChannels[x] = event.channel;
+            console.log(dataChannel[x]);
+        }
+            dataChannels[x].onmessage = receiveDataChannelMessage; 
+    } else {
+       dataChannel = event.channel;
+	   dataChannel.onmessage = receiveDataChannelMessage; 
+    }
 }
+
+
+function sendToAllPeers(data) {
+    for(var x = 0; x < dataChannels.length; x++) {
+        setTimeout (console.log.bind (console, "Send to all peers \n"));
+        dataChannels[x].send(JSON.stringify(data));
+    }
+}
+
+function pingllPeers(data) {
+    for(var x = 0; x < dataChannels.length; x++) {
+        setTimeout (console.log.bind (console, "Send to all peers \n"));
+        dataChannels[x].send(JSON.stringify(data));
+    }
+}
+
+function pingAllPeers(data) {
+    for(var x = 0; x < dataChannels.length; x++) {
+        setTimeout (console.log.bind (console, "Send to all peers \n"));
+        if(x != 0) {
+           dataChannels[x].send(JSON.stringify(data)); 
+        }
+    }
+}
+
+function receiveDataChannelMessage(event) {
+    socket.disconnect();
+    var parsedData = JSON.parse(event.data);
+    //console.log(event.data);
+    
+    // --------------------------      Ping channel 1     -------------------------------------
+    
+    if(parsedData.type == "pingTest") {
+        startPingTest();
+    }
+    
+    if(parsedData.type == "pingServer") {
+        var msg = {type:"pingReciever", ping:parsedData.ping, data:testdata};
+        //dataChannels[1].send(JSON.stringify(msg)); 
+        pingAllPeers(msg);
+        console.log("pingServer");
+    }
+    
+    if(parsedData.type == "pingReciever") {
+        pingTime = parsedData.ping;
+        var msg = {type:"pongServer", ping:pingTime, data:testdata}
+        dataChannel.send(JSON.stringify(msg));
+    }
+    
+    if(parsedData.type == "pongServer") {
+        pingTime = parsedData.ping;
+        var msg = {type:"latency", ping:pingTime, data:testdata}
+        dataChannels[0].send(JSON.stringify(msg));
+    }
+        
+    if(parsedData.type == "latency") {
+        var pongTime = Date.now();
+        pingTime =parsedData.ping;
+        var ms = (pongTime - pingTime);
+        setTimeout (console.log.bind (console, ms));
+        /*var old = localStorage.getItem("ms");
+        var news = old + ms + "\n";
+        localStorage.setItem("ms", news);*/
+    }
+
+    // -------------------------- Handle player input -------------------------------------
+    if(parsedData.type == "input") {
+        var player;
+        for(var x = 0; x < players.length; x++) {
+            if(players[x].peerId == parsedData.peerId) {
+                player = player[x];
+            }
+        } 
+        switch(data.action) {   
+            case "block":
+                player.blocking = true; 
+                break;
+            case "punch":
+                player.punching = true;
+                break;
+            case "block":
+                break;
+            case "left":
+                    
+                break;
+            case "right":
+                
+                break;
+            case "jump":
+                break;
+        }
+            
+    }
+    
+    if(parsedData.type == "recieveData") {
+        //console.log(parsedData.data);
+    }
+    
+    if(parsedData.type == "recieveUpdate") {
+        players = parsedData.update;
+    }
+    
+    if(parsedData.type == "dataTest") {
+        startDataTest();
+    }
+    
+    if(parsedData.type == "sendDataTest") {
+        sendToAllPeers(testdata);
+        
+    }
+}
+
+
 
 var ctx, width, height, canvas;
 var Game = {};  
@@ -321,13 +560,6 @@ function Player(x, y, width, height, speed) {
     }
 }
 
-var p1 = new Player(0.01, 0.6, 0.15, 0.35, 0.004);
-var p2 = new Player(0.80, 0.6, 0.15, 0.35, 0.004);
-
-players.push(p1);
-players.push(p2);
-
-
 
 document.addEventListener("keydown", function (e) {
         keys[e.keyCode] = true;
@@ -355,9 +587,8 @@ function punch() {
 }
 
 Game.input = function() { 
-    p2.animate.change(sprite_sheet.frame_sets2[0], 8);
-    
-    var msg = {start:Date.now(), testdata:testdata};
+    //p2.animate.change(sprite_sheet.frame_sets2[0], 8);
+    //var msg = {start:Date.now(), testdata:testdata};
     
     //Start test
     /*canvas.addEventListener('click', function() {
@@ -367,22 +598,36 @@ Game.input = function() {
             console.log("right");
         }       
         
-        startTest();
+        startPingTest();
     }, false);
-    */
-
+    
+    
+    canvas.addEventListener('click', function() {
+        if (dataChannel.readyState === 'open') {
+            msg = dataChannel.label + "hej";
+            dataChannel.send(JSON.stringify(msg)); 
+        }       
+    }, false);
+    if (dataChannel.readyState === 'open') {
+            msg = dataChannel.label + "hej";
+            dataChannel.send(JSON.stringify(msg)); 
+        } 
+*/
     //Jump - w
+    
+    
     if (keys[87]) {
-            if(!p1.jumping) {
-                    p1.jumping = true;
-                    p1.velY = -p1.speed * 6;
-            }
-            if(lastDir == "left") {
-                p1.animate.change(sprite_sheet.frame_sets[9], 8);  
-            } else {
-                p1.animate.change(sprite_sheet.frame_sets[2], 8);  
-            } 
+        if(!p1.jumping) {
+            p1.jumping = true;
+            p1.velY = -p1.speed * 6;
+        }
+        if(lastDir == "left") {
+            p1.animate.change(sprite_sheet.frame_sets[9], 8);  
+        } else {
+            p1.animate.change(sprite_sheet.frame_sets[2], 8);  
+        } 
     }
+    
     
     // Move right - d   
     if (keys[68]) {
@@ -456,7 +701,6 @@ Game.input = function() {
         p1.y += p1.velY;
         p1.velY -= -p1.gravity;
     }
-    console.log(p1.y);
     
     // Check if player is on the ground
     if(p1.y >= p1.startY){
@@ -491,7 +735,7 @@ Game.input = function() {
 /* -------------------------------------------------------------------------- */
 Game.drawGFX = function() {
     Game.drawWorld();
-    Game.drawPlayers();
+    //Game.drawPlayers();
     Game.drawUI();
     Game.drawFPS();
 };
@@ -583,7 +827,8 @@ Game.drawFPS = function(){
     ctx.font = (0.05 * canvas.height + "px Roboto Condensed");
     ctx.strokeText((1000/frameTime).toFixed(1) + " FPS", canvas.width * 0.005 , canvas.height * 0.04 );
 }
-
+var p1 = new Player(0.01, 0.6, 0.15, 0.35, 0.004);
+var p2 = new Player(0.01, 0.6, 0.15, 0.35, 0.004);
 /* -------------------------------------------------------------------------- */
 Game.initialize = function() {
     sprite_sheet.image.src = "img/spritesheet.png";
@@ -593,6 +838,7 @@ Game.initialize = function() {
         ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        
     }
 };
 
@@ -672,42 +918,6 @@ function colCheck(shapeA, shapeB) {
     return colDir;
 }
 
-(function() {
-    var onEachFrame;
-    if (window.requestAnimationFrame) {
-       onEachFrame = function(cb) {
-          var _cb = function() {
-                cb();
-             requestAnimationFrame(_cb);
-          };
-          _cb();
-       };
-    } else if (window.webkitRequestAnimationFrame) {
-       onEachFrame = function(cb) {
-          var _cb = function() {
-             cb();
-             webkitRequestAnimationFrame(_cb);
-          };
-          _cb();
-       };
-    } else if (window.mozRequestAnimationFrame) {
-        onEachFrame = function(cb) {
-            var _cb = function() {
-                cb();
-                mozRequestAnimationFrame(_cb);
-            };
-            _cb();
-        };
-    } else {
-        onEachFrame = function(cb) {
-            setInterval(cb, Game.skipTicks);
-        };
-    }
-
-    window.onEachFrame = onEachFrame;
-})();
-
-/* -------------------------------------------------------------------------- */
 (function() {
     var onEachFrame;
     if (window.requestAnimationFrame) {
