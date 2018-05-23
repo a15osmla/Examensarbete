@@ -101,8 +101,8 @@ function sendTests() {
         var msg = {type:"pingTest"}
         dataChannels[0].send(JSON.stringify(msg));
         //serverTest();
-        msg = {type:"dataTest"};
-        pingAllPeers(msg);
+        var msg2 = {type:"dataTest"};
+        pingAllPeers(msg2);
     }
 }
 
@@ -331,12 +331,6 @@ function sendToAllPeers(data) {
     }
 }
 
-function pingllPeers(data) {
-    for(var x = 0; x < dataChannels.length; x++) {
-        setTimeout (console.log.bind (console, "Send to all peers \n"));
-        dataChannels[x].send(JSON.stringify(data));
-    }
-}
 
 function pingAllPeers(data) {
     for(var x = 0; x < dataChannels.length; x++) {
@@ -359,31 +353,35 @@ function receiveDataChannelMessage(event) {
     }
     
     if(parsedData.type == "ping") {
-        var msg = {type:"serverData", ping:parsedData.ping, data:serverData};
+        var msg = {type:"serverData", data:serverData};
         //dataChannels[1].send(JSON.stringify(msg)); 
         sendToAllPeers(msg);
-        msg = {type:"pong", ping:parsedData.ping, data:testData};
-        dataChannels[0].send(JSON.stringify(msg));
+        
+        var msg2 = {type:"pong", ping:parsedData.ping};
+        dataChannels[0].send(JSON.stringify(msg2));
     }
-    
         
     if(parsedData.type == "pong") {
         var pongTime = Date.now();
-        pingTime =parsedData.ping;
+        pingTime = parsedData.ping;
         var ms = (pongTime - pingTime);
-        //setTimeout (console.log.bind (console, ms));
-        var logger = document.getElementById("logger");
-        logger.append(ms+ "\n");  
+        setTimeout (console.log.bind (console, ms));
+        //var logger = document.getElementById("logger");
+        //logger.append(ms+ "\n");  
         /*var old = localStorage.getItem("ms");
         var news = old + ms + "\n";
         localStorage.setItem("ms", news);*/
     }
     
-      if(parsedData.type == "serverData") {
-
-        /*var old = localStorage.getItem("ms");
-        var news = old + ms + "\n";
-        localStorage.setItem("ms", news);*/
+    if(parsedData.type == "serverData") {
+    }
+    
+    if(parsedData.type == "sendDataTest") {
+        
+    }
+    
+    if(parsedData.type == "dataTest") {
+        startDataTest();
     }
 
     // -------------------------- Handle player input -------------------------------------
@@ -421,13 +419,6 @@ function receiveDataChannelMessage(event) {
     
     if(parsedData.type == "recieveUpdate") {
         players = parsedData.update;
-    }
-    
-    if(parsedData.type == "dataTest") {
-        startDataTest();
-    }
-    
-    if(parsedData.type == "sendDataTest") {
     }
 }
 
