@@ -105,14 +105,7 @@ io.sockets.on('connection', function(socket) {
                     //io.sockets.emit("test", JSON.stringify(msg));
             }   
             
-             if(action == "pong") {
-                 if(players.length >= 2) {
-                     msg = {start: start};
-                     io.sockets.connected[otherId].emit("latency", JSON.stringify(msg)); 
-                 }
-                //io.sockets.emit("test", JSON.stringify(msg)); 
-            }
-                
+           
             else if (action == "left") {
                 player.x -= player.speed;
                 player.dir = lastDir;

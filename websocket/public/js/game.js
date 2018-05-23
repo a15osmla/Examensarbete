@@ -33,7 +33,6 @@ function startTest() {
   if (!testing) {
       testing = true;
       interval = setInterval(function(){ 
-          var start = Date.now();
         //var msg = {action : "ping", id:otherId, start:start, testdata:testdata};
           var msg = {action:'ping', start:Date.now(), testdata:testData, id:sessionId};
           socket.emit('message', JSON.stringify(msg));
@@ -613,6 +612,7 @@ Game.run = (function() {
             var parsedData = JSON.parse(dataz);
         });
         
+        /*
         socket.on("ping", function(dataz) {
             console.log("ping");
             var parsedData = JSON.parse(dataz);
@@ -620,19 +620,17 @@ Game.run = (function() {
             var msg = {action:"pong", start: parsedData.start, id:parsedData.id};
             socket.emit("message", JSON.stringify(msg));
         });
+        */
         
         socket.on("pong", function(dataz){
+            
             var parsedData = JSON.parse(dataz);
             var e = Date.now();
             var ms = (e - parsedData.start);
-            console.log(ms);
-            var logger = document.getElementById("logger");
-            logger.append(ms + "\n");  
-            /*if(ms) {
-                var old = localStorage.getItem("ms");
-                var news = old + ms + "\n";
-                localStorage.setItem("ms", news);
-            }*/
+            setTimeout (console.log.bind (console, ms));
+            //var logger = document.getElementById("logger");
+            //logger.append(ms + "\n");  
+            
         });
 
         socket.on("players", function(data) {
