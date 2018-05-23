@@ -232,7 +232,7 @@ io.sockets.on('connection', function(socket) {
     }); 
 });
 
-server.listen(process.env.PORT || 1337);
+server.listen(process.env.PORT || 1338);
 
 /* -------------------------------------------------------------------------- */
 

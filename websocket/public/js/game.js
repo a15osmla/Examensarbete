@@ -627,9 +627,9 @@ Game.run = (function() {
             var parsedData = JSON.parse(dataz);
             var e = Date.now();
             var ms = (e - parsedData.start);
-            setTimeout (console.log.bind (console, ms));
-            //var logger = document.getElementById("logger");
-            //logger.append(ms + "\n");  
+            //setTimeout (console.log.bind (console, ms));
+            var logger = document.getElementById("logger");
+            logger.append(ms + "\n");  
             
         });
 
@@ -673,3 +673,27 @@ Game.run = (function() {
             localStorage.setItem("ms", news);
             */
         });
+
+var textFile = null;
+  makeTextFile = function (text) {
+    var data = new Blob([text], {type: 'text/plain'});
+
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+
+    textFile = window.URL.createObjectURL(data);
+
+    return textFile;
+  };
+
+
+  var create = document.getElementById('create');
+
+  create.addEventListener('click', function () {
+    var link = document.getElementById('downloadlink');
+    link.href = makeTextFile(logger.value);
+    link.style.display = 'block';
+  }, false);

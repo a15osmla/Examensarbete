@@ -163,3 +163,21 @@ svg{
     width:30%;
     height:40%;
 }
+
+#create {
+    position:absolute;
+    top:90%;
+    left:40%;
+    z-index:1000;
+    width:5%;
+    height:5%; 
+}
+
+#downloadlink {
+    position:absolute;
+    top:97%;
+    left:60%;
+    z-index:1000;
+    width:5%;
+    height:5%; 
+}
