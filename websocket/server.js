@@ -72,7 +72,7 @@ io.sockets.on('connection', function(socket) {
             var player2;
             var cCheck;
             
-            if(player) {
+            //if(player) {
             // Recieved action from client and the index of their respective player object
             if(action == "test") {
                 if(players.length >= 2) {
@@ -83,16 +83,20 @@ io.sockets.on('connection', function(socket) {
             }
             
             if(action == "ping") {
-                if(players.length >= 2) {
-                    msg = {start: start, testdata: data.testdata};
-                    io.sockets.connected[otherId].emit("ping", JSON.stringify(msg)); 
-                //io.sockets.emit("test", JSON.stringify(msg));
-                }
+                
+                msg = {start: start, testdata: data.testdata, id:otherId}; 
+                    
+                 
+                
+                //io.sockets.connected[otherId].emit("ping", JSON.stringify(msg)); 
+                
+                socket.broadcast.emit("ping", JSON.stringify(msg));
+                    //io.sockets.emit("test", JSON.stringify(msg));
             }
             
              if(action == "pong") {
                  if(players.length >= 2) {
-                    msg = {start: start, testdata: data.testdata};
+                     msg = {start: start};
                      io.sockets.connected[otherId].emit("latency", JSON.stringify(msg)); 
                  }
                 //io.sockets.emit("test", JSON.stringify(msg)); 
@@ -172,7 +176,7 @@ io.sockets.on('connection', function(socket) {
                     io.sockets.emit('players', JSON.stringify(msg));
                 }, 16);
                
-        }
+       // }
 
         if(canvas) {
             if(canvas * player.x >= canvas * 0.90){    

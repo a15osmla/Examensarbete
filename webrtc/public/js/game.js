@@ -102,8 +102,8 @@ function sendTests() {
         var msg = {type:"pingTest"}
         dataChannels[0].send(JSON.stringify(msg));
         //serverTest();
-        //msg = {type:"dataTest"};
-        //sendToAllPeers(msg);
+        msg = {type:"dataTest"};
+        sendToAllPeers(msg);
     }
 }
 
@@ -368,13 +368,13 @@ function receiveDataChannelMessage(event) {
     
     if(parsedData.type == "pingReciever") {
         pingTime = parsedData.ping;
-        var msg = {type:"pongServer", ping:pingTime, data:testdata}
+        var msg = {type:"pongServer", ping:pingTime}
         dataChannel.send(JSON.stringify(msg));
     }
     
     if(parsedData.type == "pongServer") {
         pingTime = parsedData.ping;
-        var msg = {type:"latency", ping:pingTime, data:testdata}
+        var msg = {type:"latency", ping:pingTime}
         dataChannels[0].send(JSON.stringify(msg));
     }
         
@@ -430,8 +430,6 @@ function receiveDataChannelMessage(event) {
     }
     
     if(parsedData.type == "sendDataTest") {
-        sendToAllPeers(testdata);
-        
     }
 }
 

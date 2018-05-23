@@ -143,3 +143,14 @@ section#start-1 {
 svg{
     background:none;
 }
+
+#test{
+    position:absolute;
+    top:30%;
+    left:20%;
+    z-index:1000;
+    width:10%;
+    height:5%;
+    background:black;
+    text-align: center;
+}
