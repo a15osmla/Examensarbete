@@ -1,8 +1,7 @@
-var testdata = "rtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwertrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqweqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwwqwewqwertqwertqwerqwertrtwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
+var serverData =
+"ertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
+var testdata = "tqwertqwertqwertwertqwertqwertqwertqwert";
 
-// 1 kb
-var serverData = "rtqwertqwertqwertqwertqwertqwertqwerqwertrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqweqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqweewqewqqqwertqwertqwertrrtqwertqrtqwertqwertqwertqwertqwertqwertrrtqwertqrtqwertqwertqwertrrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwertrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwerttqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwertwwqwewqwertqwertqwerqwertrtwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
-//testdata = "212312331231212312123123321231233123123123121212312123123321231233123121231212312332";
 localStorage.clear();
 var socket = io.connect();
 var peerConn;
@@ -36,7 +35,7 @@ function startPingTest() {
   if (!pingTest) {
       pingTest = true;
       var interval = setInterval(function(){
-          var msg = {type:"pingServer", ping:Date.now(), data:testdata};
+          var msg = {type:"ping", ping:Date.now()};
           dataChannel.send(JSON.stringify(msg)); 
     }, 1000/60);
   }
@@ -103,7 +102,7 @@ function sendTests() {
         dataChannels[0].send(JSON.stringify(msg));
         //serverTest();
         msg = {type:"dataTest"};
-        sendToAllPeers(msg);
+        pingAllPeers(msg);
     }
 }
 
@@ -359,30 +358,29 @@ function receiveDataChannelMessage(event) {
         startPingTest();
     }
     
-    if(parsedData.type == "pingServer") {
-        var msg = {type:"pingReciever", ping:parsedData.ping, data:testdata};
+    if(parsedData.type == "ping") {
+        var msg = {type:"serverData", ping:parsedData.ping, data:serverData};
         //dataChannels[1].send(JSON.stringify(msg)); 
-        pingAllPeers(msg);
-        console.log("pingServer");
-    }
-    
-    if(parsedData.type == "pingReciever") {
-        pingTime = parsedData.ping;
-        var msg = {type:"pongServer", ping:pingTime}
-        dataChannel.send(JSON.stringify(msg));
-    }
-    
-    if(parsedData.type == "pongServer") {
-        pingTime = parsedData.ping;
-        var msg = {type:"latency", ping:pingTime}
+        sendToAllPeers(msg);
+        msg = {type:"pong", ping:parsedData.ping, data:testData};
         dataChannels[0].send(JSON.stringify(msg));
     }
+    
         
-    if(parsedData.type == "latency") {
+    if(parsedData.type == "pong") {
         var pongTime = Date.now();
         pingTime =parsedData.ping;
         var ms = (pongTime - pingTime);
-        setTimeout (console.log.bind (console, ms));
+        //setTimeout (console.log.bind (console, ms));
+        var logger = document.getElementById("logger");
+        logger.append(ms+ "\n");  
+        /*var old = localStorage.getItem("ms");
+        var news = old + ms + "\n";
+        localStorage.setItem("ms", news);*/
+    }
+    
+      if(parsedData.type == "serverData") {
+
         /*var old = localStorage.getItem("ms");
         var news = old + ms + "\n";
         localStorage.setItem("ms", news);*/

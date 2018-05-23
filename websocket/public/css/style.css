@@ -154,3 +154,12 @@ svg{
     background:black;
     text-align: center;
 }
+
+#logger{
+    position:absolute;
+    top:50%;
+    left:40%;
+    z-index:1000;
+    width:30%;
+    height:40%;
+}

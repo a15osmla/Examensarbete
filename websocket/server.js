@@ -10,6 +10,11 @@ var connections = [];
 var players = [];
 var msg;
 
+var serverData =
+"ertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
+var testData = "tqwertqwertqwertwertqwertqwertqwertqwert";
+
+
 function Player(x, y, width, height, speed, id, p, index, dir) {
     this.player = p;
     this.pid = id;
@@ -82,17 +87,23 @@ io.sockets.on('connection', function(socket) {
                 //io.sockets.emit("test", JSON.stringify(msg)); 
             }
             
+            if(action == "serverData") {
+                
+            }
+            
+            if(action == "sendDataTest") {
+                msg = {filler:"dsdsa"};
+                socket.broadcast.emit("dataTest", JSON.stringify(msg));
+            }
+            
             if(action == "ping") {
+                msg = {data:serverData};
+                io.sockets.emit("testdata", JSON.stringify(msg));
                 
                 msg = {start: start, testdata: data.testdata, id:otherId}; 
-                    
-                 
-                
-                //io.sockets.connected[otherId].emit("ping", JSON.stringify(msg)); 
-                
-                socket.broadcast.emit("ping", JSON.stringify(msg));
+                io.sockets.connected[otherId].emit("pong", JSON.stringify(msg));
                     //io.sockets.emit("test", JSON.stringify(msg));
-            }
+            }   
             
              if(action == "pong") {
                  if(players.length >= 2) {

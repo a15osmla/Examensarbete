@@ -1,4 +1,6 @@
-var testdata = "rtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwertrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwerqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqweqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwwqwewqwertqwertqwerqwertrtwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
+var serverData =
+"ertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
+var testData = "tqwertqwertqwertwertqwertqwertqwertqwert";
 
 var Game = {};
 var keys = {};
@@ -26,16 +28,33 @@ var testing;
 var gameStatus;
 var actionz;
 
+
 function startTest() {
   if (!testing) {
-    testing = true;
-     interval = setInterval(function(){ 
-        var start = Date.now();
+      testing = true;
+      interval = setInterval(function(){ 
+          var start = Date.now();
         //var msg = {action : "ping", id:otherId, start:start, testdata:testdata};
-        var msg = {action:'ping', start:Date.now(), testdata:testdata, id:sessionId};
+          var msg = {action:'ping', start:Date.now(), testdata:testData, id:sessionId};
+          socket.emit('message', JSON.stringify(msg));
+    }, 1000/60);
+  }
+}
+
+var dataTest = false;
+function startDataTest() {
+    if (!dataTest) {
+        dataTest = true;
+        var interval = setInterval(function(){
+        var msg = {action:"serverData", test:testData};
         socket.emit('message', JSON.stringify(msg));
     }, 1000/60);
   }
+}
+
+function sendDataTest() {
+    var msg = {action:"sendDataTest"};
+    socket.emit("message", JSON.stringify(msg));
 }
 
 var starter = false;
@@ -45,8 +64,10 @@ testButton.addEventListener("click", function () {
         starter = true;
         testButton.style.display="none";
         startTest();
+        sendDataTest();
     }
 });
+
 
 var sprite_sheet = {
     // P1
@@ -579,8 +600,17 @@ Game.run = (function() {
 })();
 
 
- socket.on("connect", function(){
+        socket.on("connect", function(){
             sessionId = socket.io.engine.id;
+        });
+
+        socket.on("dataTest", function(dataz) {
+            startDataTest();
+            console.log("datatest");
+        });
+        
+        socket.on("testdata", function(dataz) {
+            var parsedData = JSON.parse(dataz);
         });
         
         socket.on("ping", function(dataz) {
@@ -591,11 +621,13 @@ Game.run = (function() {
             socket.emit("message", JSON.stringify(msg));
         });
         
-        socket.on("latency", function(dataz){
+        socket.on("pong", function(dataz){
             var parsedData = JSON.parse(dataz);
             var e = Date.now();
             var ms = (e - parsedData.start);
             console.log(ms);
+            var logger = document.getElementById("logger");
+            logger.append(ms + "\n");  
             /*if(ms) {
                 var old = localStorage.getItem("ms");
                 var news = old + ms + "\n";
