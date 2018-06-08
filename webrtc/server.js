@@ -121,5 +121,10 @@ io.sockets.on("connection", function (socket) {
     });
 
 });
+<<<<<<< HEAD
 
 server.listen(process.env.PORT || 1337);
+=======
+          
+server.listen(process.env.PORT || 1338);
+>>>>>>> d809175e7854f181c182e72f4dd9c50cb25d8931
