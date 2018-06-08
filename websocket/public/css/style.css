@@ -144,9 +144,12 @@ svg{
     background:none;
 }
 
+
+/*-------------------- Test ------------------------ */
+
 #test{
     position:absolute;
-    top:30%;
+    top:40%;
     left:20%;
     z-index:1000;
     width:10%;
@@ -157,9 +160,27 @@ svg{
 
 #logger{
     position:absolute;
-    top:50%;
+    top:20%;
     left:40%;
     z-index:1000;
     width:30%;
     height:40%;
+}
+
+#create {
+    position:absolute;
+    top:65%;
+    left:40%;
+    z-index:1000;
+    width:5%;
+    height:5%; 
+}
+
+#downloadlink {
+    position:absolute;
+    top:65%;
+    left:55%;
+    z-index:1000;
+    width:5%;
+    height:5%; 
 }

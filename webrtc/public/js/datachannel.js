@@ -1,190 +1,253 @@
-/*var socket = io.connect();
-var peerConn;
-var config = {
-	'iceServers': [{'url': 'stun:stun.1und1.de'}
-                  ]
-};
-
-var storage = localStorage.setItem("ms", " ");
-
-var dataChannelOptions = {
-	ordered: true, //no guaranteed delivery, unreliable but faster 
-	maxRetransmitTime: 1000, //milliseconds
-};
-var dataChannel;
-var sessionId;
-var otherId;
-
-socket.on('connect', function(data) {
-    console.log("This clients id: " + socket.id);
-    sessionId = socket.id;
-    
-    
-    socket.on('users', function(data) {
-        var array = data.users;
-        for(var x = 0; x < array.length; x++) {
-            if(sessionId != array[x]) {
-               otherId = array[x];
-            }
-        }
-    });
- 
-    
-    peerConn = new RTCPeerConnection(config, null);
-    dataChannel = peerConn.createDataChannel('textMessages', dataChannelOptions);  
-    
-    dataChannel.onopen = dataChannelStateChanged;
-    peerConn.ondatachannel = receiveDataChannel;
-    
-    displaySignalMessage("RTCPeerConnection object was created");
-      
-    
-    socket.on('connectedfirst', function(data){ 
-        peerConn.onicecandidate = function (event) { 
-        if (event.candidate) { 
-            send({ 
-               type: "candidate", 
-               candidate: event.candidate, 
-               session:otherId
-            });
-         } 
-        }; 
-       
-        
-        if(data == sessionId) {
-          peerConn.createOffer(function (offer) { 
-            displaySignalMessage("create offer");
-             send({ type: "offer", offer: offer, session: otherId}); 
-             peerConn.setLocalDescription(offer); 
-          }, function (error) { 
-             displaySignalMessage("erorr");
-          }); 
-        }
-        
-    }); 
-});
-
+//----------------------------------------------- Datachannels -------------------------------------------------------
 
 //Data Channel Specific methods
 function dataChannelStateChanged(event) {
-	if (dataChannel.readyState === 'open') {
-        socket.disconnect();
-        displaySignalMessage("Data Channel open");
-		dataChannel.onmessage = receiveDataChannelMessage;
-        setInterval(function(){ 
-            var s =Date.now();
-            dataChannel.send(s);                  
-        }, 1000/60);
-	}
-}
-
-
-function receiveDataChannelMessage(event) {
-    var s = event.data;
-    var ms = Date.now() - s;
-    
-    var old = localStorage.getItem("ms");
-    var news = old + ms + "\n";
-    localStorage.setItem("ms", news);
-    console.log(ms);
+    var channelLabel = event.currentTarget.label;
+    if (host) {
+        for (var x = 0; x < dataChannels.length; x++) {
+            if (dataChannels[x].readyState === 'open') {
+                dataChannels[x].onmessage = receiveDataChannelMessage;
+            }
+        }
+    } else {
+        if (dataChannel.readyState === 'open') {
+            dataChannel.onmessage = receiveDataChannelMessage;
+        }
+    }
 }
 
 function receiveDataChannel(event) {
-	displaySignalMessage("Receiving a data channel");
-	dataChannel = event.channel;
-	dataChannel.onmessage = receiveDataChannelMessage;
+    if (host) {
+        for (var x = 0; x < dataChannels.length; x++) {
+            dataChannels[x] = event.channel;
+            console.log(dataChannel[x]);
+        }
+        dataChannels[x].onmessage = receiveDataChannelMessage;
+        dataChannels[x].send("player");
+    } else {
+        dataChannel = event.channel;
+        dataChannel.onmessage = receiveDataChannelMessage;
+    }
 }
 
-
-socket.on('message', function(message) {
-    var data = JSON.parse(message); 
-    switch(data.type) { 
-      case "offer": 
-        displaySignalMessage("Offer received");
-         onOffer(data.offer, data.session); 
-         break; 
-      case "answer":
-         displaySignalMessage("answer received");
-        
-         onAnswer(data.answer); 
-         break; 
-      case "candidate":
-        displaySignalMessage("candidate received");
-         onCandidate(data.candidate); 
-         break; 
-      default: 
-         break; 
-   } 
-});
-
-//when somebody wants to call us 
-function onOffer(offer, sessionId) { 
-  console.log(offer);
-   connectedUser = name; 
-   peerConn.setRemoteDescription(new RTCSessionDescription(offer), function() {
-       console.log(peerConn);
-   },  console.error.bind(console));
-	
-  peerConn.createAnswer(function (answer) { 
-      peerConn.setLocalDescription(answer); 
-		
-      send({ 
-         type: "answer", 
-         answer: answer,
-         session: otherId
-      }); 
-		
-   }, function (error) { 
-      alert("oops...error"); 
-   }); 
+function sendToAllPeers(data) {
+    for (var x = 0; x < dataChannels.length; x++) {
+        setTimeout(console.log.bind(console, "Send to all peers \n"));
+        dataChannels[x].send(JSON.stringify(data));
+    }
 }
 
-//when another user answers to our offer 
-function onAnswer(answer) {
-    peerConn.setRemoteDescription(new RTCSessionDescription(answer), function() {
-       console.log(peerConn);
-   },  console.error.bind(console));
+function pingAllPeers(data) {
+    for (var x = 0; x < dataChannels.length; x++) {
+        setTimeout(console.log.bind(console, "Send to all peers \n" + data));
+        if (x != 0) {
+            dataChannels[x].send(JSON.stringify(data));
+        }
+    }
 }
 
-function send(message) {
-    //socket.emit("message", message);
-    socket.emit("message", (JSON.stringify(message)));
-    displaySignalMessage("sending to server" + message);
-    console.log("sending to server," +  JSON.stringify(message));
+function receiveDataChannelMessage(event) {
+    socket.disconnect();
+    var parsedData = JSON.parse(event.data);
+
+    // --------------------------      Ping channel 1     -------------------------------------
+
+    if (parsedData.type == "pingTest") {
+        startPingTest();
+    }
+
+    if (parsedData.type == "ping") {
+        var msg = {
+            type: "serverData",
+            data: serverData
+        };
+        sendToAllPeers(msg);
+
+        var msg2 = {
+            type: "pong",
+            ping: parsedData.ping
+        };
+        dataChannels[0].send(JSON.stringify(msg2));
+    }
+
+    if (parsedData.type == "pong") {
+        var pongTime = Date.now();
+        pingTime = parsedData.ping;
+        var ms = (pongTime - pingTime);
+        setTimeout (console.log.bind (console, ms));
+        var logger = document.getElementById("logger");
+        /*logger.append(ms + "\n");
+        messages = messages + 1;
+        console.log(passes);
+        if (messages >= 800) {
+            link.setAttribute("download", passes + ".txt");
+            create.click();
+            link.click();
+            logger.innerHTML = "";
+            messages = 0;
+            passes = passes + 1;
+        }*/
+       
+    }
+
+    if (parsedData.type == "dataTest") {
+        startDataTest();
+    }
+
+    // -------------------------- Handle player input -------------------------------------
+    if (parsedData.type == "input") {
+        lastDir = parsedData.dir;
+        index = parsedData.index;
+        player = players[index];
+        var canvas = parsedData.canvas;
+        var cCheck;
+        var cCheck2;
+        var player2;
+
+        switch (parsedData.action) {
+            case "block":
+                player.blocking = true;
+                player.action = "block";
+                msg = {
+                    type: "recieveUpdate",
+                    players: players
+                };
+                sendToAllPeers(msg);
+                break;
+            case "punch":
+                player.blocking = false;
+                player.action = "punch";
+                for (var x = 0; x < players.length; x++) {
+                    if (index != players[x].index) {
+                        player2 = players[x];
+                    }
+                }
+
+                if (player2) {
+                    cCheck = colCheck(player, player2);
+                    console.log(cCheck);
+
+                    if (cCheck == "l" || cCheck == "r") {
+                        if (player.dir == "right" && player2.dir == "left") {
+                            if (!player2.blocking) {
+                                player2.hp += -5;
+                            }
+                        } else if (player2.dir == "left" && player.dir == "right") {
+                            if (!player2.blocking) {
+                                player2.hp += -5;
+                            }
+                        } else if (player.dir == "right" && player.dir == "right") {
+                            player2.hp += -5;
+                        } else {
+                            player2.hp += -5;
+                        }
+                    }
+                }
+                msg = {
+                    type: "recieveUpdate",
+                    players: players
+                };
+                sendToAllPeers(msg);
+                break;
+            case "left":
+                player.blocking = "false";
+                player.x -= player.speed;
+                player.dir = lastDir;
+                player.action = "left";
+                msg = {
+                    type: "recieveUpdate",
+                    players: players
+                };
+                sendToAllPeers(msg);
+                break;
+            case "right":
+                player.blocking = "false";
+                player.x += player.speed;
+                player.dir = lastDir;
+                player.action = "right";
+                msg = {
+                    type: "recieveUpdate",
+                    players: players
+                };
+                sendToAllPeers(msg);
+
+                break;
+            case "jump":
+                var interval = setInterval(function () {
+                    console.log(player.index + " " + player.y);
+                    if (!player.jumping && player.grounded) {
+                        player.jumping = true;
+                        player.grounded = false;
+                        player.velY = -player.speed * 6;
+                        player.action = "jump";
+                    }
+
+                    if (player.jumping) {
+                        player.y += player.velY;
+                        player.velY -= -player.gravity;
+                    }
+
+                    // Check if player is on the ground
+                    if (player.y >= player.startY) {
+                        player.jumping = false;
+                        player.grounded = true;
+                        player.velY = 0;
+                        clearInterval(interval);
+                        player.action = "idle";
+                    }
+                    msg = {
+                        type: "recieveUpdate",
+                        players: players
+                    };
+                    sendToAllPeers(msg);
+                    player.blocking = "false";
+                }, 16);
+                break;
+            case "idle":
+                player.action = "idle";
+                player.blocking = "false";
+
+                msg = {
+                    type: "recieveUpdate",
+                    players: players
+                };
+                sendToAllPeers(msg);
+                break;
+        }
+
+        if (canvas) {
+            if (canvas * player.x >= canvas * 0.90) {
+                if (lastDir == "right") {
+                    player.speed = 0;
+                } else {
+                    player.speed = player.orgSpeed;
+                }
+                msg = {
+                    type: "recieveUpdate",
+                    players: players
+                };
+                sendToAllPeers(msg);
+            }
+
+            if (canvas * player.x <= canvas * -0.07) {
+                if (lastDir == "left") {
+                    player.speed = 0;
+                } else {
+                    player.speed = player.orgSpeed;
+                }
+                msg = {
+                    type: "recieveUpdate",
+                    players: players
+                };
+                sendToAllPeers(msg);
+            }
+        }
+    }
+
+    if (parsedData.type == "recieveUpdate") {
+        lastRecievedUpdate = Date.now();
+        recievedPlayers.length = 0;
+        recievedPlayers = parsedData.players;
+        addPlayers();
+    }
 }
-
-//when we got ice candidate from another user 
-function onCandidate(candidate) { 
-   peerConn.addIceCandidate(new RTCIceCandidate(candidate));
-    console.log(peerConn);
-}
-
-
-function displaySignalMessage(message) {
-};
-
-//creating data channel 
-function openDataChannel() { 
-
-   var dataChannelOptions = { 
-      reliable:false
-   }; 
-	
-    dataChannel = peerConn.createDataChannel("myDataChannel", dataChannelOptions);
-    
-    dataChannel.onopen = function(event) {
-      dataChannel.send("Hi there1");
-    };
-    
-   dataChannel.onerror = function (error) { 
-      console.log("Error:", error); 
-   };
-    
-    dataChannel.send("ssd");
-	
-   dataChannel.onmessage = function (event) { 
-      console.log("Got message:", event.data); 
-   };
-    
-    
-}*/
