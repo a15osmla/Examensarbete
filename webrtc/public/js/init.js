@@ -6,7 +6,7 @@ testdata = "ertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwer
 var socket = io.connect();
 var hosting = false;
 var starter = false;
-var test = false;
+
 var ctx, width, height, canvas, peerConn, dataChannel, sessionId, testing, pongTime, pingTime, latency, host, start, hostId, action, actionz, set, player, lastRecievedUpdate, animation;
 var filterStrength = 20;
 var frameTime = 0,
@@ -85,35 +85,13 @@ function dynamicallyLoadScript(filepath, callback) {
     }
 }
 
-function runGame() {
-    Game.initialize();
-    window.onEachFrame(Game.run);
-}
-
 function hideTestElements() {
     document.getElementById("test").style.display = "none";
     document.getElementById("host").style.display = "none";
     document.getElementById("start").style.display = "none";
 }
 
-if (test == true) {
-    var controls = document.getElementsByClassName("controller");
-    for (var i = 0; i < controls.length; i++) {
-        controls[i].style.display = 'none';
-    }
-    /*
-    dynamicallyLoadScript("/js/dataChannel.js");
-    dynamicallyLoadScript("/js/test.js");*/
-} else {
-    document.getElementById("logger").style.display = "none";
-    document.getElementById("test").style.display = "none";
-    document.getElementById("create").style.display = "none";
-    document.getElementById("downloadlink").style.display = "none";
-    /*
-    dynamicallyLoadScript("/js/gameGFX.js");
-    dynamicallyLoadScript("/js/gameLogic.js");
-    dynamicallyLoadScript("/js/gameInput.js");
-    dynamicallyLoadScript("/js/dataChannel.js");
-    dynamicallyLoadScript("/js/game.js", runGame);
-    */
+function runGame() {
+    Game.initialize();
+    window.onEachFrame(Game.run);
 }

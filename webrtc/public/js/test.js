@@ -8,6 +8,19 @@ var serverTesting = false;
 var messages = 0;
 var passes = 0;
 var testStarter = false;
+var test = false;;
+
+if (test == true) {
+    var controls = document.getElementsByClassName("controller");
+    for (var i = 0; i < controls.length; i++) {
+        controls[i].style.display = 'none';
+    }
+} else {
+    document.getElementById("logger").style.display = "none";
+    document.getElementById("test").style.display = "none";
+    document.getElementById("create").style.display = "none";
+    document.getElementById("downloadlink").style.display = "none";
+}
 
 makeTextFile = function (text) {
     var data = new Blob([text], {
@@ -29,7 +42,6 @@ create.addEventListener('click', function () {
     link.href = makeTextFile(logger.value);
     link.style.display = 'block';
 });
-
 
 // Peer 
 function startPingTest() {

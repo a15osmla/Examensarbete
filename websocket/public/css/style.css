@@ -169,11 +169,7 @@ svg{
 
 #create {
     position:absolute;
-<<<<<<< HEAD
     top:65%;
-=======
-    top:90%;
->>>>>>> d809175e7854f181c182e72f4dd9c50cb25d8931
     left:40%;
     z-index:1000;
     width:5%;
@@ -182,13 +178,8 @@ svg{
 
 #downloadlink {
     position:absolute;
-<<<<<<< HEAD
-    top:65%;
+    top:90%;
     left:55%;
-=======
-    top:97%;
-    left:60%;
->>>>>>> d809175e7854f181c182e72f4dd9c50cb25d8931
     z-index:1000;
     width:5%;
     height:5%; 

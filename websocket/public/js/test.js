@@ -6,12 +6,27 @@ var testButton = document.getElementById("test");
 var textFile = null;
 var messages = 0;
 var passes = 0;
-
-
+var test = true;
 var starter = false;
 
 testData, serverData = "ertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertrrtqwertqrtqwertqwertqwertqwertqwertqwertrrtqwertqrtqwertqwertqwertrrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwertrtqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwerttqwertqwertqwertqwertqwertqwertqwertqwertqwertqwertqqwertqwertwertqwertqwertqwertqqwertqwertqwertqwertwertqwertqwertqwertqwert";
 
+function hideTestElements() {
+    document.getElementById("logger").style.display = "none";
+    document.getElementById("create").style.display = "none";
+    document.getElementById("test").style.display = "none";
+    document.getElementById("downloadlink").style.display = "none";
+}
+
+if (test == false) {
+    hideTestElements();
+    runGame();
+} else {
+    var controls = document.getElementsByClassName("controller");
+    for (var i = 0; i < controls.length; i++) {
+        controls[i].style.display = 'none';
+    }
+}
 
 makeTextFile = function (text) {
     var data = new Blob([text], {
@@ -55,9 +70,10 @@ testButton.addEventListener("click", function () {
         startTest();
     }
 });
+
 var phone = false;
-socket.on("pong", function (dataz) {
-    var parsedData = JSON.parse(dataz);
+socket.on("pong", function (data) {
+    var parsedData = JSON.parse(data);
     var e = Date.now();
     var ms = (e - parsedData.start);
 
@@ -76,7 +92,6 @@ socket.on("pong", function (dataz) {
         } else {
             setTimeout(console.log.bind(console, ms));
         }
-
     }
 });
 

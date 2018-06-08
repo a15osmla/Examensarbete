@@ -1,7 +1,5 @@
 var socket = io.connect();
-
 var otherId, sessionId, animation, lastDir, set, index, actionz, action, jumping,punching, lastRecievedUpdate;
-var test = true;
 
 var players = [];
 var recievedPlayers = [];
@@ -46,22 +44,4 @@ function dynamicallyLoadScript(filepath, callback) {
 function runGame() {
     Game.initialize();
     window.onEachFrame(Game.run);
-}
-
-function hideTestElements() {
-    document.getElementById("logger").style.display = "none";
-    document.getElementById("create").style.display = "none";
-    document.getElementById("test   ").style.display = "none";
-    document.getElementById("downloadlink").style.display = "none";
-}
-
-if (test == true) {
-var controls = document.getElementsByClassName("controller");
-    for (var i = 0; i < controls.length; i++) {
-        controls[i].style.display = 'none';
-    }
-    
-    
-} else {
-    hideTestElements();
 }
