@@ -76,23 +76,22 @@ function receiveDataChannelMessage(event) {
         var ms = (pongTime - pingTime);
         var phone = false;
         if(phone){
-              var logger = document.getElementById("logger");
-        logger.append(ms + "\n");
-        messages = messages + 1;
-        if (messages >= 800) {
-            link.setAttribute("download", passes + ".txt");
-            create.click();
-            link.click();
-            logger.innerHTML = "";
-            messages = 0;
-            passes = passes + 1;
-    }
+            var logger = document.getElementById("logger");
+            logger.append(ms + "\n");
+            messages = messages + 1;
+            if (messages >= 800) {
+                link.setAttribute("download", passes + ".txt");
+                create.click();
+                link.click();
+                logger.innerHTML = "";
+                messages = 0;
+                passes = passes + 1;
+            }
         } else {
             setTimeout (console.log.bind (console, ms));
         }
+    }
         
-      
-
     if (parsedData.type == "dataTest") {
         startDataTest();
     }

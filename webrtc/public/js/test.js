@@ -8,7 +8,7 @@ var serverTesting = false;
 var messages = 0;
 var passes = 0;
 var testStarter = false;
-var test = false;;
+var test = true;
 
 if (test == true) {
     var controls = document.getElementsByClassName("controller");
