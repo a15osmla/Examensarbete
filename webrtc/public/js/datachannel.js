@@ -74,11 +74,11 @@ function receiveDataChannelMessage(event) {
         var pongTime = Date.now();
         pingTime = parsedData.ping;
         var ms = (pongTime - pingTime);
-        setTimeout (console.log.bind (console, ms));
-        var logger = document.getElementById("logger");
-        /*logger.append(ms + "\n");
+        var phone = false;
+        if(phone){
+              var logger = document.getElementById("logger");
+        logger.append(ms + "\n");
         messages = messages + 1;
-        console.log(passes);
         if (messages >= 800) {
             link.setAttribute("download", passes + ".txt");
             create.click();
@@ -86,9 +86,12 @@ function receiveDataChannelMessage(event) {
             logger.innerHTML = "";
             messages = 0;
             passes = passes + 1;
-        }*/
-       
     }
+        } else {
+            setTimeout (console.log.bind (console, ms));
+        }
+        
+      
 
     if (parsedData.type == "dataTest") {
         startDataTest();
